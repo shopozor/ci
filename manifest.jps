@@ -1,0 +1,17 @@
+jpsVersion: 1.3
+jpsType: install
+application:
+  id: shopozor-ci
+  name: Shopozor Continuous Integration
+  version: 0.0
+  baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
+
+onInstall:
+  - installJenkins
+
+actions:
+  installJenkins:
+    install:
+      jps: https://github.com/jelastic-jps/jenkins/blob/master/manifest.jps
+      envName: shopozor-ci
+      displayName: Shopozor Continuous Integration
