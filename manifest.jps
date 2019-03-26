@@ -6,12 +6,24 @@ application:
   version: 0.0
   baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
 
-onInstall:
-  - installJenkins
+  env:
+    topology:
+      nodes:
+        - image: jenkins/jenkins:lts
+          count: 1
+          cloudlets: 16
+          nodeGroup: cp
 
-actions:
-  installJenkins:
-    install:
-      jps: https://github.com/jelastic-jps/jenkins/blob/master/manifest.jps
-      envName: shopozor-ci
-      displayName: Shopozor Continuous Integration
+  onInstall:
+    # auto install suggested plugins
+    - installDocker
+    # - installPullRequestBuilderPlugins (https://jenkins.io/doc/book/managing/plugins/)
+    # - setupJobs
+
+  actions:
+    installDocker:
+      cmd [cp]:
+        - curl -fsSL ${baseUrl}/scripts/InstallDocker.sh | /bin/bash
+
+success: |
+  **Your environment Jenkins has been installed successfully.**
