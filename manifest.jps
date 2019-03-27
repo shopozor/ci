@@ -60,13 +60,11 @@ application:
           nodeGroup: cp
 
   onInstall:
-    # - setupUserAccount
     - installDocker
     - setupCredentials
     - installPlugins
-    # - setupJobs
-    # necessary files:
-    # jenkins_home/jobs/*
+    - setupJobs
+    # TODO: cleanup /tmp folder!
 
   actions:
     installDocker:
@@ -146,6 +144,15 @@ application:
           - ./${globals.CREDENTIAL_SCRIPT} ${globals.GITHUB_CREDENTIAL_FILENAME}
           - ./${globals.CREDENTIAL_SCRIPT} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
           - ./${globals.CREDENTIAL_SCRIPT} ${globals.HIDORA_CREDENTIAL_FILENAME}
+    # TODO: replace with github-credentials
+    setupJobs:
+      - cmd [cp]:
+        - cd /var/jenkins_home/jobs 
+        - mkdir test-job
+      - upload:
+        - nodeGroup: cp
+          sourcePath: ${baseUrl}/config/test-job.xml
+          destPath: /var/jenkins_home/jobs/test-job/config.xml
 
 success: |
   **Your environment Jenkins has been installed successfully.**
