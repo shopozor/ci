@@ -9,7 +9,10 @@ application:
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
     CREDENTIAL_FILENAME: credential.xml
-    CREDENTIAL_SCRIPT: CreateCredentials.sh
+    GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
+    BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
+    HIDORA_CREDENTIAL_FILENAME: hidora-credentials.xml
+    CREDENTIAL_SCRIPT: CreateCredential.sh
     GITHUB_CREDENTIALS_ID: github-credentials
 
   settings:
@@ -59,8 +62,8 @@ application:
   onInstall:
     # - setupUserAccount
     - installDocker
-    - installPlugins
     - setupCredentials
+    - installPlugins
     # - setupJobs
     # necessary files:
     # jenkins_home/jobs/*
@@ -78,22 +81,24 @@ application:
           - nodeGroup: cp
             sourcePath: ${baseUrl}/config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
             destPath: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
-      - replaceInFile [cp]:
-        path: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
-        replacements:
-          - pattern: GITHUB_CREDENTIALS
-            replacement: ${globals.GITHUB_CREDENTIALS_ID}
-      - restartNodes:
+      - replaceInFile:
+          nodeType: docker
+          path: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+          replacements:
+            - pattern: GITHUB_CREDENTIALS
+              replacement: ${globals.GITHUB_CREDENTIALS_ID}
+      - restartContainers:
           - nodeGroup: cp
     setupCredentials:
       - cmd [cp]:
           - cd /tmp
           - wget ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} github-credentials.xml
-          - cp ${globals.CREDENTIAL_FILENAME} bitbucket-credentials.xml
-          - cp ${globals.CREDENTIAL_FILENAME} hidora-credentials.xml
-      - replaceInFile [cp]:
-          path: /tmp/github-credentials.xml
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.HIDORA_CREDENTIAL_FILENAME}
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
@@ -105,8 +110,9 @@ application:
               replacement: ${settings.githubPassword}
             - pattern: DESCRIPTION
               replacement: Github credentials
-      - replaceInFile [cp]:
-          path: /tmp/bitbucket-credentials.xml
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
@@ -118,8 +124,9 @@ application:
               replacement: ${settings.bitbucketPassword}
             - pattern: DESCRIPTION
               replacement: Bitbucket credentials
-      - replaceInFile [cp]:
-          path: /tmp/hidora-credentials.xml
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
@@ -132,11 +139,13 @@ application:
             - pattern: DESCRIPTION
               replacement: Hidora credentials
       - cmd [cp]:
+          - curl -fsSL ${baseUrl}/scripts/InstallPlugin.sh | /bin/bash -s credentials
           - cd /tmp
           - wget ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT}
-          - ${globals.CREDENTIAL_SCRIPT} github-credentials.xml
-          - ${globals.CREDENTIAL_SCRIPT} bitbucket-credentials.xml
-          - ${globals.CREDENTIAL_SCRIPT} hidora-credentials.xml
+          - chmod u+x ${globals.CREDENTIAL_SCRIPT}
+          - ./${globals.CREDENTIAL_SCRIPT} ${globals.GITHUB_CREDENTIAL_FILENAME}
+          - ./${globals.CREDENTIAL_SCRIPT} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          - ./${globals.CREDENTIAL_SCRIPT} ${globals.HIDORA_CREDENTIAL_FILENAME}
 
 success: |
   **Your environment Jenkins has been installed successfully.**
