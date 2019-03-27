@@ -6,6 +6,48 @@ application:
   version: 0.0
   baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
 
+  globals:
+    JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
+    CREDENTIAL_FILENAME: credential.xml
+    CREDENTIAL_SCRIPT: CreateCredentials.sh
+    GITHUB_CREDENTIALS_ID: github-credentials
+
+  settings:
+    fields:
+      - type: spacer
+        caption: Github credentials
+      - name: githubUsername
+        caption: User
+        type: string
+        required: true
+      - name: githubPassword
+        caption: Password
+        type: string
+        inputType: password
+        required: true
+      - type: spacer
+        caption: Bitbucket credentials
+      - name: bitbucketUsername
+        caption: User
+        type: string
+        required: true
+      - name: bitbucketPassword
+        caption: Password
+        type: string
+        inputType: password
+        required: true
+      - type: spacer
+        caption: Hidora credentials
+      - name: hidoraUsername
+        caption: User
+        type: string
+        required: true
+      - name: hidoraPassword
+        caption: Password
+        type: string
+        inputType: password
+        required: true
+
   env:
     topology:
       nodes:
@@ -15,15 +57,86 @@ application:
           nodeGroup: cp
 
   onInstall:
-    # auto install suggested plugins
+    # - setupUserAccount
     - installDocker
-    # - installPullRequestBuilderPlugins (https://jenkins.io/doc/book/managing/plugins/)
+    - installPlugins
+    - setupCredentials
     # - setupJobs
+    # necessary files:
+    # jenkins_home/jobs/*
 
   actions:
     installDocker:
       cmd [cp]:
         - curl -fsSL ${baseUrl}/scripts/InstallDocker.sh | /bin/bash
+    installPlugins:
+      - cmd [cp]:
+          - cd /tmp
+          - wget ${baseUrl}/config/${globals.JENKINS_PLUGINS_FILENAME}
+          - curl -fsSL ${baseUrl}/scripts/InstallPlugins.sh | /bin/bash -s ${globals.JENKINS_PLUGINS_FILENAME}
+      - upload:
+          - nodeGroup: cp
+            sourcePath: ${baseUrl}/config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+            destPath: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+      - replaceInFile [cp]:
+        path: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+        replacements:
+          - pattern: GITHUB_CREDENTIALS
+            replacement: ${globals.GITHUB_CREDENTIALS_ID}
+      - restartNodes:
+          - nodeGroup: cp
+    setupCredentials:
+      - cmd [cp]:
+          - cd /tmp
+          - wget ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} github-credentials.xml
+          - cp ${globals.CREDENTIAL_FILENAME} bitbucket-credentials.xml
+          - cp ${globals.CREDENTIAL_FILENAME} hidora-credentials.xml
+      - replaceInFile [cp]:
+          path: /tmp/github-credentials.xml
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.GITHUB_CREDENTIALS_ID}
+            - pattern: USERNAME
+              replacement: ${settings.githubUsername}
+            - pattern: PASSWORD
+              replacement: ${settings.githubPassword}
+            - pattern: DESCRIPTION
+              replacement: Github credentials
+      - replaceInFile [cp]:
+          path: /tmp/bitbucket-credentials.xml
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: bitbucket-credentials
+            - pattern: USERNAME
+              replacement: ${settings.bitbucketUsername}
+            - pattern: PASSWORD
+              replacement: ${settings.bitbucketPassword}
+            - pattern: DESCRIPTION
+              replacement: Bitbucket credentials
+      - replaceInFile [cp]:
+          path: /tmp/hidora-credentials.xml
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: hidora-credentials
+            - pattern: USERNAME
+              replacement: ${settings.hidoraUsername}
+            - pattern: PASSWORD
+              replacement: ${settings.hidoraPassword}
+            - pattern: DESCRIPTION
+              replacement: Hidora credentials
+      - cmd [cp]:
+          - cd /tmp
+          - wget ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT}
+          - ${globals.CREDENTIAL_SCRIPT} github-credentials.xml
+          - ${globals.CREDENTIAL_SCRIPT} bitbucket-credentials.xml
+          - ${globals.CREDENTIAL_SCRIPT} hidora-credentials.xml
 
 success: |
   **Your environment Jenkins has been installed successfully.**
