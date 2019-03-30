@@ -1,5 +1,6 @@
 ant
 build-timeout
+credentials
 docker-java-api
 email-ext
 github-branch-source
