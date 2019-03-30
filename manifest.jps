@@ -13,6 +13,7 @@ application:
     BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
     HIDORA_CREDENTIAL_FILENAME: hidora-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
+    JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
     HIDORA_CREDENTIALS_ID: hidora-credentials
@@ -144,19 +145,22 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
       - restart
     setupJobs:
-      - cmd [cp]:
-        - cd /var/jenkins_home/jobs 
-        - mkdir test-job
       - upload:
         - nodeGroup: cp
           sourcePath: ${baseUrl}/config/test-job.xml
-          destPath: /var/jenkins_home/jobs/test-job/config.xml
+          destPath: /tmp/test-job.xml
       - replaceInFile:
           nodeType: docker
-          path: /var/jenkins_home/jobs/test-job/config.xml
+          path: /tmp/test-job.xml
           replacements:
             - pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
+      - cmd [cp]:
+        - cd /tmp
+        - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT}
+        - chmod u+x ./${globals.JOB_CREATION_SCRIPT}
+        - ./${globals.JOB_CREATION_SCRIPT} "test-job"
+      - restart
     restart:  
       - restartContainers:
         - nodeGroup: cp
