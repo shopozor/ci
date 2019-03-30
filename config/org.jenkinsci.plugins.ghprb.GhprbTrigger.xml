@@ -19,7 +19,7 @@
     <org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>
       <serverAPIUrl>https://api.github.com</serverAPIUrl>
       <credentialsId>GITHUB_CREDENTIALS</credentialsId>
-      <id>489b4ba1-4ddc-40d4-9e26-26f86898b984</id>
+      <id>GHPRB_TRIGGER_AUTH_ID</id>
       <description>Github pull request builder</description>
       <secret>{AQAAABAAAAAQjyEQcP02/GnIC634XXkPWG/dHSg2qdxYeg4+g2iHYUU=}</secret>
     </org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>

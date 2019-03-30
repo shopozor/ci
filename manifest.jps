@@ -14,6 +14,8 @@ application:
     HIDORA_CREDENTIAL_FILENAME: hidora-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     GITHUB_CREDENTIALS_ID: github-credentials
+    BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
+    HIDORA_CREDENTIALS_ID: hidora-credentials
 
   settings:
     fields:
@@ -61,10 +63,9 @@ application:
 
   onInstall:
     - installDocker
-    - setupCredentials
     - installPlugins
+    - setupCredentials
     - setupJobs
-    # TODO: cleanup /tmp folder!
 
   actions:
     installDocker:
@@ -85,8 +86,7 @@ application:
           replacements:
             - pattern: GITHUB_CREDENTIALS
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
-      - restartContainers:
-          - nodeGroup: cp
+      - restart
     setupCredentials:
       - cmd [cp]:
           - cd /tmp
@@ -115,7 +115,7 @@ application:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: bitbucket-credentials
+              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
             - pattern: USERNAME
               replacement: ${settings.bitbucketUsername}
             - pattern: PASSWORD
@@ -129,22 +129,20 @@ application:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: hidora-credentials
+              replacement: ${globals.HIDORA_CREDENTIALS_ID}
             - pattern: USERNAME
               replacement: ${settings.hidoraUsername}
             - pattern: PASSWORD
               replacement: ${settings.hidoraPassword}
             - pattern: DESCRIPTION
-              replacement: Hidora credentials
+              replacement: Hidora credentials 
       - cmd [cp]:
-          - curl -fsSL ${baseUrl}/scripts/InstallPlugin.sh | /bin/bash -s credentials
-          - cd /tmp
-          - wget ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT}
-          - chmod u+x ${globals.CREDENTIAL_SCRIPT}
-          - ./${globals.CREDENTIAL_SCRIPT} ${globals.GITHUB_CREDENTIAL_FILENAME}
-          - ./${globals.CREDENTIAL_SCRIPT} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          - ./${globals.CREDENTIAL_SCRIPT} ${globals.HIDORA_CREDENTIAL_FILENAME}
-    # TODO: replace with github-credentials
+          - wget ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
+          - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
+      - restart
     setupJobs:
       - cmd [cp]:
         - cd /var/jenkins_home/jobs 
@@ -153,6 +151,14 @@ application:
         - nodeGroup: cp
           sourcePath: ${baseUrl}/config/test-job.xml
           destPath: /var/jenkins_home/jobs/test-job/config.xml
-
+      - replaceInFile:
+          nodeType: docker
+          path: /var/jenkins_home/jobs/test-job/config.xml
+          replacements:
+            - pattern: GITHUB_CREDENTIAL_ID
+              replacement: ${globals.GITHUB_CREDENTIALS_ID}
+    restart:  
+      - restartContainers:
+        - nodeGroup: cp
 success: |
   **Your environment Jenkins has been installed successfully.**

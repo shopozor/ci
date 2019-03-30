@@ -38,7 +38,7 @@
               <branch></branch>
             </org.jenkinsci.plugins.ghprb.GhprbBranch>
           </blackListTargetBranches>
-          <gitHubAuthId>489b4ba1-4ddc-40d4-9e26-26f86898b984</gitHubAuthId>
+          <gitHubAuthId>GHPRB_TRIGGER_AUTH_ID</gitHubAuthId>
           <triggerPhrase></triggerPhrase>
           <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
           <blackListCommitAuthor></blackListCommitAuthor>
@@ -69,7 +69,7 @@
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
           <url>https://github.com/softozor/jenkins-ci-test</url>
-          <credentialsId>c797b98b-a821-485c-ac7d-7c16a9335a31</credentialsId>
+          <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
