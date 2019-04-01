@@ -75,11 +75,11 @@ application:
     installPlugins:
       - cmd [cp]:
           - cd /tmp
-          - wget --quiet ${baseUrl}/config/${globals.JENKINS_PLUGINS_FILENAME}
+          - wget --quiet ${baseUrl}/config/plugins/${globals.JENKINS_PLUGINS_FILENAME}
           - curl -fsSL ${baseUrl}/scripts/InstallPlugins.sh | /bin/bash -s ${globals.JENKINS_PLUGINS_FILENAME}
       - upload:
           - nodeGroup: cp
-            sourcePath: ${baseUrl}/config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+            sourcePath: ${baseUrl}/config/plugins/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
             destPath: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
       - replaceInFile:
           nodeType: docker
@@ -150,10 +150,10 @@ application:
         nodeGroup: cp
       - upload:
         - nodeGroup: cp
-          sourcePath: ${baseUrl}/config/test-job.xml
+          sourcePath: ${baseUrl}/config/test-job/config.xml
           destPath: /var/jenkins_home/jobs/test-job/config.xml
         - nodeGroup: cp
-          sourcePath: ${baseUrl}/config/nextBuildNumber
+          sourcePath: ${baseUrl}/config/test-job/nextBuildNumber
           destPath: /var/jenkins_home/jobs/test-job/nextBuildNumber
       - replaceInFile:
           nodeType: docker
