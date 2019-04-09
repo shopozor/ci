@@ -1,0 +1,41 @@
+jpsVersion: 1.3
+jpsType: update
+application:
+  id: shopozor-ci
+  name: Shopozor Continuous Integration
+  version: 0.0
+  baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
+
+  globals:
+    JOB_CREATION_SCRIPT: CreateJob.sh
+    GITHUB_CREDENTIALS_ID: github-credentials
+    BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
+    HIDORA_CREDENTIALS_ID: hidora-credentials
+
+  onInstall:
+    - setupJobs
+
+  actions:
+    setupJobs:
+      - upload:
+        - nodeGroup: cp
+          sourcePath: ${baseUrl}/config/test-job/config.xml
+          destPath: /tmp/test-job.xml
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/test-job.xml
+          replacements:
+            - pattern: GITHUB_CREDENTIAL_ID
+              replacement: ${globals.GITHUB_CREDENTIALS_ID}
+      - cmd [cp]:
+        - cd /tmp
+        - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}
+        - chmod u+x /tmp/${globals.JOB_CREATION_SCRIPT}
+        - /tmp/${globals.JOB_CREATION_SCRIPT} "test-job"
+      - restart
+    restart:  
+      - restartContainers:
+        - nodeGroup: cp
+
+success: |
+  **Your environment Jenkins has been installed successfully.**
