@@ -17,6 +17,10 @@ application:
     GITHUB_CREDENTIALS_ID: github-credentials
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
     HIDORA_CREDENTIALS_ID: hidora-credentials
+    PG_USER_PASSWORD: ${fn.password(10)}
+    PG_DB_USERNAME: saleor
+    PG_DB_NAME: saleor
+    PG_PASSWORD: ${fn.password(10)}
 
   settings:
     fields:
@@ -61,12 +65,19 @@ application:
           count: 1
           cloudlets: 16
           nodeGroup: cp
+        - nodeGroup: sqldb
+          nodeType: postgresql
+          tag: 11.2
+          displayName: PostgreSQL
+          fixedCloudlets: 1
+          cloudlets: 4
 
   onInstall:
     - installDocker
     - installPlugins
     - setupCredentials
     - setupJobs
+    - installPostgresqlDB
 
   actions:
     installDocker:
@@ -151,6 +162,41 @@ application:
       - install:
           jps: ${baseUrl}/config/job-setup.jps
           envName: ${env.envName}
+    installPostgresqlDB:
+      - prepareDatabase
+      - restorePermissions
+      - sendEmailWithPasswords
+      - restart
+    prepareDatabase:
+      - setDatabaseUrlEnvVar
+      - createDatabase
+    setDatabaseUrlEnvVar:
+      - api:
+          - method: jelastic.environment.control.AddContainerEnvVars
+            params:
+              nodeGroup: cp
+              vars:
+                DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
+    createDatabase:
+      cmd[sqldb]:
+        - jem passwd set -p ${globals.PG_PASSWORD}
+        - export PGPASSWORD='${globals.PG_PASSWORD}'
+        - psql -U webadmin -d postgres -c "CREATE ROLE ${globals.PG_DB_USERNAME} PASSWORD '${globals.PG_USER_PASSWORD}' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
+        - psql -U webadmin -d postgres -c "CREATE DATABASE ${globals.PG_DB_NAME} OWNER ${globals.PG_DB_USERNAME} ENCODING 'utf-8' TEMPLATE template0;"
+      user: root
+    restorePermissions:
+      - cmd [sqldb]:
+          - export PGPASSWORD='${globals.PG_PASSWORD}'
+          - psql -U webadmin -d postgres -c "ALTER USER ${globals.PG_DB_USERNAME} WITH NOSUPERUSER;"
+        user: root
+    sendEmailWithPasswords:
+      return:
+        result: success
+        email: |
+          # PostgreSQL
+          **PostgreSQL URL**: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
+          # PgAdmin
+          **webadmin**: ${globals.PG_PASSWORD}
     restart:  
       - restartContainers:
         - nodeGroup: cp

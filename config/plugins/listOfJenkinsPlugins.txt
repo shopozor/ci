@@ -1,6 +1,7 @@
 ant
 build-timeout
 credentials
+cucumber-reports
 docker-java-api
 email-ext
 github-branch-source
