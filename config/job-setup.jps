@@ -17,13 +17,17 @@ application:
 
   actions:
     setupJobs:
+      - setupJob:
+          jobName: shopozor-backend-acceptance
+      - restart
+    setupJob:
       - upload:
         - nodeGroup: cp
-          sourcePath: ${baseUrl}/config/shopozor-backend-acceptance.xml
-          destPath: /tmp/shopozor-backend-acceptance.xml
+          sourcePath: ${baseUrl}/config/${this.jobName}.xml
+          destPath: /tmp/${this.jobName}.xml
       - replaceInFile:
           nodeType: docker
-          path: /tmp/shopozor-backend-acceptance.xml
+          path: /tmp/${this.jobName}.xml
           replacements:
             - pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
@@ -31,8 +35,7 @@ application:
         - cd /tmp
         - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.JOB_CREATION_SCRIPT}
-        - /tmp/${globals.JOB_CREATION_SCRIPT} "shopozor-backend-acceptance"
-      - restart
+        - /tmp/${globals.JOB_CREATION_SCRIPT} "${this.jobName}"
     restart:  
       - restartContainers:
         - nodeGroup: cp
