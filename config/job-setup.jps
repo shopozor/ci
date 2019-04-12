@@ -35,7 +35,7 @@ application:
         - cd /tmp
         - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.JOB_CREATION_SCRIPT}
-        - /tmp/${globals.JOB_CREATION_SCRIPT} "${this.jobName}"
+        - /tmp/${globals.JOB_CREATION_SCRIPT} ${this.jobName}
     restart:  
       - restartContainers:
         - nodeGroup: cp
