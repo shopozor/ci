@@ -80,8 +80,8 @@ application:
     - installDocker
     - installPlugins
     - setupCredentials
-    - setupJobs
     - installPostgresqlDB
+    - setupJobs
 
   actions:
     installDocker:
