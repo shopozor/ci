@@ -183,7 +183,6 @@ application:
           envName: ${env.envName}
     installPostgresqlDB:
       - prepareDatabase
-      - restorePermissions
       - sendEmailWithPasswords
       - restart
     prepareDatabase:
@@ -195,11 +194,6 @@ application:
         - psql -U webadmin -d postgres -c "CREATE ROLE ${globals.PG_DB_USERNAME} PASSWORD '${globals.PG_USER_PASSWORD}' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
         - psql -U webadmin -d postgres -c "CREATE DATABASE ${globals.PG_DB_NAME} OWNER ${globals.PG_DB_USERNAME} ENCODING 'utf-8' TEMPLATE template0;"
       user: root
-    restorePermissions:
-      - cmd [sqldb]:
-          - export PGPASSWORD='${globals.PG_PASSWORD}'
-          - psql -U webadmin -d postgres -c "ALTER USER ${globals.PG_DB_USERNAME} WITH NOSUPERUSER;"
-        user: root
     sendEmailWithPasswords:
       return:
         result: success
