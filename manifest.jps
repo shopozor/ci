@@ -82,7 +82,8 @@ application:
     - setupCredentials
     - installPostgresqlDB
     - setupJobs
-
+    - sendEmailWithPasswords
+    
   actions:
     installDocker:
       cmd [cp]:
@@ -183,7 +184,6 @@ application:
           envName: ${env.envName}
     installPostgresqlDB:
       - prepareDatabase
-      - sendEmailWithPasswords
       - restart
     prepareDatabase:
       - createDatabase
