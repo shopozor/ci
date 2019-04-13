@@ -1,12 +1,13 @@
 #! /bin/bash
 
-if [ $# -ne 1 ] ; then
-  echo "Usage: $0 <job-name>"
+if [ $# -ne 3 ] ; then
+  echo "Usage: $0 <job-name> <username> <password>"
   exit
 fi
 
-USER=admin
-PASSWORD=$(cat /var/jenkins_home/secrets/initialAdminPassword)
+USER=$2
+PASSWORD=$3
+
 CLI="java -jar /var/jenkins_home/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080/ -auth $USER:$PASSWORD"
 
 JOB_NAME=$1
