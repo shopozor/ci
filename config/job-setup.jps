@@ -12,6 +12,21 @@ application:
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
     HIDORA_CREDENTIALS_ID: hidora-credentials
 
+  settings:
+    fields:
+      - type: spacer
+        caption: Jenkins credentials
+      - name: username
+        caption: Username
+        type: string
+        required: true
+        default: admin
+      - name: password
+        caption: Password
+        type: string
+        inputType: password
+        required: true
+
   onInstall:
     - setupJobs
 
@@ -35,7 +50,12 @@ application:
         - cd /tmp
         - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.JOB_CREATION_SCRIPT}
-        - /tmp/${globals.JOB_CREATION_SCRIPT} ${this.jobName}
+      - if (settings.username == "admin"):
+          - cmd [cp]:
+              - cd /tmp && /tmp/${globals.JOB_CREATION_SCRIPT} "${this.jobName}" "${settings.username}" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
+      - if (settings.username != "admin"):
+          - cmd [cp]:
+              - cd /tmp && /tmp/${globals.JOB_CREATION_SCRIPT} "${this.jobName}" "${settings.username}" "${settings.password}"
     restart:  
       - restartContainers:
         - nodeGroup: cp

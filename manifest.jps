@@ -175,6 +175,13 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
       - restart
+    installPostgresqlDB:
+      - cmd[sqldb]:
+          - jem passwd set -p ${globals.PG_PASSWORD}
+          - export PGPASSWORD='${globals.PG_PASSWORD}'
+          - psql -U webadmin -d postgres -c "CREATE ROLE ${globals.PG_DB_USERNAME} PASSWORD '${globals.PG_USER_PASSWORD}' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
+          - psql -U webadmin -d postgres -c "CREATE DATABASE ${globals.PG_DB_NAME} OWNER ${globals.PG_DB_USERNAME} ENCODING 'utf-8' TEMPLATE template0;"
+        user: root
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
@@ -182,18 +189,9 @@ application:
       - install:
           jps: ${baseUrl}/config/job-setup.jps
           envName: ${env.envName}
-    installPostgresqlDB:
-      - prepareDatabase
-      - restart
-    prepareDatabase:
-      - createDatabase
-    createDatabase:
-      cmd[sqldb]:
-        - jem passwd set -p ${globals.PG_PASSWORD}
-        - export PGPASSWORD='${globals.PG_PASSWORD}'
-        - psql -U webadmin -d postgres -c "CREATE ROLE ${globals.PG_DB_USERNAME} PASSWORD '${globals.PG_USER_PASSWORD}' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
-        - psql -U webadmin -d postgres -c "CREATE DATABASE ${globals.PG_DB_NAME} OWNER ${globals.PG_DB_USERNAME} ENCODING 'utf-8' TEMPLATE template0;"
-      user: root
+          settings:
+            username: admin 
+            password: doYouReallyBelieveThisIsTheAdminPassword?
     sendEmailWithPasswords:
       return:
         result: success
