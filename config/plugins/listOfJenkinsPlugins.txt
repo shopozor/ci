@@ -12,6 +12,7 @@ gradle
 junit
 ldap
 matrix-auth
+nodejs
 pam-auth
 pipeline-github-lib
 ssh-slaves
