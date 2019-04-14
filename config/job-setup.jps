@@ -34,6 +34,8 @@ application:
     setupJobs:
       - setupJob:
           jobName: shopozor-backend-acceptance
+      - setupJob:
+          jobName: shopozor-management-frontend
       - restart
     setupJob:
       - upload:
@@ -46,6 +48,8 @@ application:
           replacements:
             - pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
+            - pattern: BITBUCKET_CREDENTIAL_ID
+              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
       - cmd [cp]:
         - cd /tmp
         - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}
