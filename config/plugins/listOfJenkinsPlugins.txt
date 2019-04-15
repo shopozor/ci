@@ -11,7 +11,6 @@ github-branch-source
 gradle
 junit
 ldap
-matrix-auth
 pam-auth
 pipeline-github-lib
 ssh-slaves
