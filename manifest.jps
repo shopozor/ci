@@ -240,7 +240,7 @@ application:
             - pattern: PASSWORD
               replacement: ${settings.backendJps}
             - pattern: DESCRIPTION
-              replacement: Name of the backend environment
+              replacement: Name and raw jps url of the backend environment
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
@@ -254,7 +254,7 @@ application:
             - pattern: PASSWORD
               replacement: ${settings.consumerFrontendJps}
             - pattern: DESCRIPTION
-              replacement: Name of the consumer frontend environment
+              replacement: Name and raw jps url of the consumer frontend environment
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
@@ -268,7 +268,7 @@ application:
             - pattern: PASSWORD
               replacement: ${settings.mgmtFrontendJps}
             - pattern: DESCRIPTION
-              replacement: Name of the management frontend environment
+              replacement: Name and raw jps url of the management frontend environment
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
