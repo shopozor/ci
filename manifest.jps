@@ -63,16 +63,8 @@ application:
         caption: Consumer frontend name
         type: string
         required: true
-      - name: consumerFrontendJps
-        caption: Consumer frontend JPS
-        type: string
-        required: true
       - name: mgmtFrontendEnvName
         caption: Mgmt frontend name
-        type: string
-        required: true
-      - name: mgmtFrontendJps
-        caption: Mgmt frontend JPS
         type: string
         required: true
         
@@ -155,10 +147,10 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
@@ -249,10 +241,8 @@ application:
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
               replacement: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
-            - pattern: USERNAME
+            - pattern: SECRET
               replacement: ${settings.consumerFrontendEnvName}
-            - pattern: PASSWORD
-              replacement: ${settings.consumerFrontendJps}
             - pattern: DESCRIPTION
               replacement: Name of the consumer frontend environment
       - replaceInFile:
@@ -263,10 +253,8 @@ application:
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
               replacement: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
-            - pattern: USERNAME
+            - pattern: SECRET
               replacement: ${settings.mgmtFrontendEnvName}
-            - pattern: PASSWORD
-              replacement: ${settings.mgmtFrontendJps}
             - pattern: DESCRIPTION
               replacement: Name of the management frontend environment
       - cmd [cp]:
