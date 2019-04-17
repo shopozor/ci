@@ -113,6 +113,7 @@ application:
   onInstall:
     - installDocker
     - installPlugins
+    - installAptPackages
     - setupCredentials
     - installPostgresqlDB
     - setupJobs
@@ -138,6 +139,9 @@ application:
             - pattern: GITHUB_CREDENTIALS
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
       - restart
+    installAptPackages:
+      cmd [cp]: 
+        - apt install jq
     setupCredentials:
       - cmd [cp]:
           - cd /tmp
