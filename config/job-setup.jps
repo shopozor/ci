@@ -37,7 +37,7 @@ application:
       - setupJob:
           jobName: shopozor-management-frontend-acceptance
       - setupJob:
-          jobName: shopozor-consumer-frontend-acceptancev
+          jobName: shopozor-consumer-frontend-acceptance
       - setupJob:
           jobName: shopozor-management-e2e
       - setupJob:
