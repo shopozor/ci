@@ -31,12 +31,20 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: Hidora credentials
-      - name: hidoraUsername
+        caption: Jelastic credentials
+      - name: jelasticUrl
+        caption: Hoster URL
+        type: string
+        required: true
+      - name: jelasticAppId
+        caption: AppId
+        type: string
+        required: true
+      - name: jelasticUsername
         caption: User
         type: string
         required: true
-      - name: hidoraPassword
+      - name: jelasticPassword
         caption: Password
         type: string
         inputType: password
@@ -62,13 +70,15 @@ application:
     SECRET_CREDENTIAL_FILENAME: secret.xml
     GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
     BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
-    HIDORA_CREDENTIAL_FILENAME: hidora-credentials.xml
+    JELASTIC_CREDENTIAL_FILENAME: jelastic-credentials.xml
+    JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
-    HIDORA_CREDENTIALS_ID: hidora-credentials
+    JELASTIC_CREDENTIALS_ID: jelastic-credentials
+    JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
@@ -110,7 +120,8 @@ application:
           - wget --quiet ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.HIDORA_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
       - replaceInFile:
@@ -143,18 +154,32 @@ application:
               replacement: Bitbucket credentials
       - replaceInFile:
           nodeType: docker
-          path: /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
+          path: /tmp/${globals.JELASTIC_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: ${globals.HIDORA_CREDENTIALS_ID}
+              replacement: ${globals.JELASTIC_CREDENTIALS_ID}
             - pattern: USERNAME
-              replacement: ${settings.hidoraUsername}
+              replacement: ${settings.jelasticUsername}
             - pattern: PASSWORD
-              replacement: ${settings.hidoraPassword}
+              replacement: ${settings.jelasticPassword}
             - pattern: DESCRIPTION
-              replacement: Hidora credentials
+              replacement: Jelastic credentials
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.JELASTIC_APP_CREDENTIALS_ID}
+            - pattern: USERNAME
+              replacement: ${settings.jelasticUrl}
+            - pattern: PASSWORD
+              replacement: ${settings.jelasticAppId}
+            - pattern: DESCRIPTION
+              replacement: Jelastic App credentials (hoster url and app id)
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
@@ -172,7 +197,8 @@ application:
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.HIDORA_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
       - restart
     installPostgresqlDB:
