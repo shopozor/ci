@@ -1,0 +1,61 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.32">
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <bitbucketpullrequestbuilder.bitbucketpullrequestbuilder.BitbucketBuildTrigger plugin="bitbucket-pullrequest-builder@1.4.30">
+          <spec></spec>
+          <bitbucketServer></bitbucketServer>
+          <cron></cron>
+          <credentialsId>BITBUCKET_CREDENTIAL_ID</credentialsId>
+          <username></username>
+          <password></password>
+          <repositoryOwner></repositoryOwner>
+          <repositoryName></repositoryName>
+          <branchesFilter></branchesFilter>
+          <branchesFilterBySCMIncludes>false</branchesFilterBySCMIncludes>
+          <ciKey>jenkins</ciKey>
+          <ciName>Jenkins</ciName>
+          <ciSkipPhrases></ciSkipPhrases>
+          <checkDestinationCommit>false</checkDestinationCommit>
+          <approveIfSuccess>false</approveIfSuccess>
+          <cancelOutdatedJobs>false</cancelOutdatedJobs>
+          <commentTrigger>test this please</commentTrigger>
+        </bitbucketpullrequestbuilder.bitbucketpullrequestbuilder.BitbucketBuildTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.66">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://bitbucket.org/softozor/shopozor-consumer-frontend</url>
+          <credentialsId>BITBUCKET_CREDENTIAL_ID</credentialsId>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/dev</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="list"/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <disableSubmodules>false</disableSubmodules>
+          <recursiveSubmodules>true</recursiveSubmodules>
+          <trackingSubmodules>false</trackingSubmodules>
+          <reference></reference>
+          <parentCredentials>true</parentCredentials>
+        </hudson.plugins.git.extensions.impl.SubmoduleOption>
+      </extensions>
+    </scm>
+    <scriptPath>e2e/Jenkinsfile</scriptPath>
+    <lightweight>true</lightweight>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
