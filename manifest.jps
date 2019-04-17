@@ -55,12 +55,24 @@ application:
         caption: Backend name
         type: string
         required: true
+      - name: backendJps
+        caption: Backend JPS
+        type: string
+        required: true
       - name: consumerFrontendEnvName
         caption: Consumer frontend name
         type: string
         required: true
+      - name: consumerFrontendJps
+        caption: Consumer frontend JPS
+        type: string
+        required: true
       - name: mgmtFrontendEnvName
         caption: Mgmt frontend name
+        type: string
+        required: true
+      - name: mgmtFrontendJps
+        caption: Mgmt frontend JPS
         type: string
         required: true
         
@@ -84,22 +96,22 @@ application:
     SECRET_CREDENTIAL_FILENAME: secret.xml
     GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
     BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
-    JELASTIC_CREDENTIAL_FILENAME: jelastic-credentials.xml
+    JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
-    BACKEND_NAME_CREDENTIAL_FILENAME: backend-name-credentials.xml
-    CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
-    MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME: mgmt-frontend-name-credentials.xml
+    BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
+    CONSUMER_FRONTEND_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
+    MGMT_FRONTEND_CREDENTIAL_FILENAME: mgmt-frontend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
-    JELASTIC_CREDENTIALS_ID: jelastic-credentials
+    JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
-    BACKEND_NAME_CREDENTIALS_ID: backend-name-credentials
-    CONSUMER_FRONTEND_NAME_CREDENTIALS_ID: consumer-frontend-name-credentials
-    MGMT_FRONTEND_NAME_CREDENTIALS_ID: mgmt-frontend-name-credentials
+    BACKEND_CREDENTIALS_ID: backend-name-credentials
+    CONSUMER_FRONTEND_CREDENTIALS_ID: consumer-frontend-name-credentials
+    MGMT_FRONTEND_CREDENTIALS_ID: mgmt-frontend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
     PG_DB_NAME: saleor
@@ -140,13 +152,13 @@ application:
           - wget --quiet ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
@@ -177,18 +189,18 @@ application:
               replacement: Bitbucket credentials
       - replaceInFile:
           nodeType: docker
-          path: /tmp/${globals.JELASTIC_CREDENTIAL_FILENAME}
+          path: /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: ${globals.JELASTIC_CREDENTIALS_ID}
+              replacement: ${globals.JELASTIC_USER_CREDENTIALS_ID}
             - pattern: USERNAME
               replacement: ${settings.jelasticUsername}
             - pattern: PASSWORD
               replacement: ${settings.jelasticPassword}
             - pattern: DESCRIPTION
-              replacement: Jelastic credentials
+              replacement: Jelastic user credentials
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
@@ -202,7 +214,7 @@ application:
             - pattern: PASSWORD
               replacement: ${settings.jelasticAppId}
             - pattern: DESCRIPTION
-              replacement: Jelastic App credentials (hoster url and app id)
+              replacement: Jelastic app credentials (hoster url and app id)
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
@@ -217,38 +229,44 @@ application:
               replacement: Postgres URL
       - replaceInFile:
           nodeType: docker
-          path: /tmp/${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
+          path: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: ${globals.BACKEND_NAME_CREDENTIALS_ID}
-            - pattern: SECRET
+              replacement: ${globals.BACKEND_CREDENTIALS_ID}
+            - pattern: USERNAME
               replacement: ${settings.backendEnvName}
+            - pattern: PASSWORD
+              replacement: ${settings.backendJps}
             - pattern: DESCRIPTION
               replacement: Name of the backend environment
       - replaceInFile:
           nodeType: docker
-          path: /tmp/${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          path: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: ${globals.CONSUMER_FRONTEND_NAME_CREDENTIALS_ID}
-            - pattern: SECRET
+              replacement: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
+            - pattern: USERNAME
               replacement: ${settings.consumerFrontendEnvName}
+            - pattern: PASSWORD
+              replacement: ${settings.consumerFrontendJps}
             - pattern: DESCRIPTION
               replacement: Name of the consumer frontend environment
       - replaceInFile:
           nodeType: docker
-          path: /tmp/${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          path: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           replacements:
             - pattern: GLOBAL_OR_SYSTEM
               replacement: GLOBAL
             - pattern: CREDENTIAL_ID
-              replacement: ${globals.MGMT_FRONTEND_NAME_CREDENTIALS_ID}
-            - pattern: SECRET
+              replacement: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
+            - pattern: USERNAME
               replacement: ${settings.mgmtFrontendEnvName}
+            - pattern: PASSWORD
+              replacement: ${settings.mgmtFrontendJps}
             - pattern: DESCRIPTION
               replacement: Name of the management frontend environment
       - cmd [cp]:
@@ -256,12 +274,12 @@ application:
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
       - restart
     installPostgresqlDB:
       - cmd[sqldb]:
