@@ -49,7 +49,21 @@ application:
         type: string
         inputType: password
         required: true
-
+      - type: spacer
+        caption: Env names
+      - name: backendEnvName
+        caption: Backend name
+        type: string
+        required: true
+      - name: consumerFrontendEnvName
+        caption: Consumer frontend name
+        type: string
+        required: true
+      - name: mgmtFrontendEnvName
+        caption: Mgmt frontend name
+        type: string
+        required: true
+        
   env:
     topology:
       nodes:
@@ -73,6 +87,9 @@ application:
     JELASTIC_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
+    BACKEND_NAME_CREDENTIAL_FILENAME: backend-name-credentials.xml
+    CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
+    MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME: mgmt-frontend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
@@ -80,6 +97,9 @@ application:
     JELASTIC_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
+    BACKEND_NAME_CREDENTIALS_ID: backend-name-credentials
+    CONSUMER_FRONTEND_NAME_CREDENTIALS_ID: consumer-frontend-name-credentials
+    MGMT_FRONTEND_NAME_CREDENTIALS_ID: mgmt-frontend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
     PG_DB_NAME: saleor
@@ -124,6 +144,9 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
@@ -192,6 +215,42 @@ application:
               replacement: ${globals.PG_DATABASE_URL}
             - pattern: DESCRIPTION
               replacement: Postgres URL
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.BACKEND_NAME_CREDENTIALS_ID}
+            - pattern: SECRET
+              replacement: ${settings.backendEnvName}
+            - pattern: DESCRIPTION
+              replacement: Name of the backend environment
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.CONSUMER_FRONTEND_NAME_CREDENTIALS_ID}
+            - pattern: SECRET
+              replacement: ${settings.consumerFrontendEnvName}
+            - pattern: DESCRIPTION
+              replacement: Name of the consumer frontend environment
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.MGMT_FRONTEND_NAME_CREDENTIALS_ID}
+            - pattern: SECRET
+              replacement: ${settings.mgmtFrontendEnvName}
+            - pattern: DESCRIPTION
+              replacement: Name of the management frontend environment
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
@@ -200,6 +259,9 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_NAME_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_NAME_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_NAME_CREDENTIAL_FILENAME}
       - restart
     installPostgresqlDB:
       - cmd[sqldb]:
