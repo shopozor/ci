@@ -53,7 +53,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>common/e2e/Jenkinsfile</scriptPath>
+    <scriptPath>e2e/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
