@@ -30,6 +30,17 @@ application:
         type: string
         inputType: password
         required: true
+      - type: spacer 
+        caption: Docker credentials
+      - name: dockerUsername
+        caption: User
+        type: string
+        required: true
+      - name: dockerPassword
+        caption: Password
+        type: string
+        inputType: password
+        required: true
       - type: spacer
         caption: Jelastic credentials
       - name: jelasticUrl
@@ -88,6 +99,7 @@ application:
     SECRET_CREDENTIAL_FILENAME: secret.xml
     GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
     BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
+    DOCKER_CREDENTIAL_FILENAME: docker-credentials.xml
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
@@ -98,6 +110,7 @@ application:
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
     BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
+    DOCKER_CREDENTIALS_ID: docker-credentials
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
@@ -148,6 +161,7 @@ application:
           - wget --quiet ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
@@ -183,6 +197,20 @@ application:
               replacement: ${settings.bitbucketPassword}
             - pattern: DESCRIPTION
               replacement: Bitbucket credentials
+      - replaceInFile:
+          nodeType: docker
+          path: /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
+          replacements:
+            - pattern: GLOBAL_OR_SYSTEM
+              replacement: GLOBAL
+            - pattern: CREDENTIAL_ID
+              replacement: ${globals.DOCKER_CREDENTIALS_ID}
+            - pattern: USERNAME
+              replacement: ${settings.dockerUsername}
+            - pattern: PASSWORD
+              replacement: ${settings.dockerPassword}
+            - pattern: DESCRIPTION
+              replacement: Docker hub credentials
       - replaceInFile:
           nodeType: docker
           path: /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
@@ -266,6 +294,7 @@ application:
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
