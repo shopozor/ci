@@ -122,6 +122,8 @@ application:
     PG_DB_NAME: saleor
     PG_PASSWORD: ${fn.password(10)}
     PG_DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
+    GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+    GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
 
   onInstall:
     - installDocker
@@ -143,14 +145,23 @@ application:
           - curl -fsSL ${baseUrl}/scripts/InstallPlugins.sh | /bin/bash -s ${globals.JENKINS_PLUGINS_FILENAME}
       - upload:
           - nodeGroup: cp
-            sourcePath: ${baseUrl}/config/plugins/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
-            destPath: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+            sourcePath: ${baseUrl}/config/plugins/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
+            destPath: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
+          - nodeGroup: cp
+            sourcePath: ${baseUrl}/config/plugins/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
+            destPath: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
       - replaceInFile:
           nodeType: docker
-          path: /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+          path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
           replacements:
             - pattern: GITHUB_CREDENTIALS
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
+      - replaceInFile:
+          nodeType: docker
+          path: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
+          replacements:
+            - pattern: BITBUCKET_CREDENTIALS
+              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
       - restart
     installAptPackages:
       - installJq 
