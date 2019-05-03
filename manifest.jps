@@ -6,6 +6,8 @@ application:
   version: 0.0
   baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
 
+  # if a local private registry is necessary, then add to the current manifest the manifest code from here: https://github.com/HidoraSwiss/manifest-registry/blob/master/manifest.jps
+
   settings:
     fields:
       - type: spacer
@@ -78,20 +80,6 @@ application:
         caption: Mgmt frontend name
         type: string
         required: true
-        
-  env:
-    topology:
-      nodes:
-        - image: jenkins/jenkins:lts
-          count: 1
-          cloudlets: 16
-          nodeGroup: cp
-        - nodeGroup: sqldb
-          nodeType: postgresql
-          tag: 11.2
-          displayName: PostgreSQL
-          fixedCloudlets: 1
-          cloudlets: 4
 
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
@@ -124,6 +112,20 @@ application:
     PG_DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
+        
+  env:
+    topology:
+        nodes:
+          - image: jenkins/jenkins:lts
+            count: 1
+            cloudlets: 16
+            nodeGroup: cp
+          - nodeGroup: sqldb
+            nodeType: postgresql
+            tag: 11.2
+            displayName: PostgreSQL
+            fixedCloudlets: 1
+            cloudlets: 4
 
   onInstall:
     - installDocker
@@ -136,7 +138,7 @@ application:
     
   actions:
     installDocker:
-      cmd [cp]:
+      - cmd [cp]:
         - curl -fsSL ${baseUrl}/scripts/InstallDocker.sh | /bin/bash
     installPlugins:
       - cmd [cp]:
@@ -150,18 +152,19 @@ application:
           - nodeGroup: cp
             sourcePath: ${baseUrl}/config/plugins/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
             destPath: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
-      - replaceInFile:
-          nodeType: docker
-          path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
-          replacements:
-            - pattern: GITHUB_CREDENTIALS
+      - api:
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
+              pattern: GITHUB_CREDENTIALS
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
-      - replaceInFile:
-          nodeType: docker
-          path: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
-          replacements:
-            - pattern: BITBUCKET_CREDENTIALS
+              nodeGroup: cp
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
+              pattern: BITBUCKET_CREDENTIALS
               replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
+              nodeGroup: cp
       - restart
     installAptPackages:
       - installJq 
@@ -176,6 +179,64 @@ application:
         - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
         - apt update 
         - apt install -y yarn nodejs
+    fillPasswordCredentials:
+      - api:
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: GLOBAL_OR_SYSTEM
+              replacement: ${this.globalOrSystem}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: CREDENTIAL_ID
+              replacement: ${this.credentialID}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: USERNAME
+              replacement: ${this.username}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: PASSWORD
+              replacement: ${this.password}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: DESCRIPTION
+              replacement: ${this.description}
+              nodeGroup: ${this.nodeGroup}
+    fillSecretCredentials:
+      - api:
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: GLOBAL_OR_SYSTEM
+              replacement: ${this.globalOrSystem}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: CREDENTIAL_ID
+              replacement: ${this.credentialID}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: SECRET
+              replacement: ${this.secret}
+              nodeGroup: ${this.nodeGroup}
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: ${this.filename}
+              pattern: DESCRIPTION
+              replacement: ${this.description}
+              nodeGroup: ${this.nodeGroup}
     setupCredentials:
       - cmd [cp]:
           - cd /tmp
@@ -190,126 +251,75 @@ application:
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.GITHUB_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.githubUsername}
-            - pattern: PASSWORD
-              replacement: ${settings.githubPassword}
-            - pattern: DESCRIPTION
-              replacement: Github credentials
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.bitbucketUsername}
-            - pattern: PASSWORD
-              replacement: ${settings.bitbucketPassword}
-            - pattern: DESCRIPTION
-              replacement: Bitbucket credentials
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.DOCKER_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.dockerUsername}
-            - pattern: PASSWORD
-              replacement: ${settings.dockerPassword}
-            - pattern: DESCRIPTION
-              replacement: Docker hub credentials
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.JELASTIC_USER_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.jelasticUsername}
-            - pattern: PASSWORD
-              replacement: ${settings.jelasticPassword}
-            - pattern: DESCRIPTION
-              replacement: Jelastic user credentials
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.JELASTIC_APP_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.jelasticUrl}
-            - pattern: PASSWORD
-              replacement: ${settings.jelasticAppId}
-            - pattern: DESCRIPTION
-              replacement: Jelastic app credentials (hoster url and app id)
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.POSTGRES_CREDENTIALS_ID}
-            - pattern: SECRET
-              replacement: ${globals.PG_DATABASE_URL}
-            - pattern: DESCRIPTION
-              replacement: Postgres URL
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.BACKEND_CREDENTIALS_ID}
-            - pattern: USERNAME
-              replacement: ${settings.backendEnvName}
-            - pattern: PASSWORD
-              replacement: ${settings.backendJps}
-            - pattern: DESCRIPTION
-              replacement: Name and raw jps url of the backend environment
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
-            - pattern: SECRET
-              replacement: ${settings.consumerFrontendEnvName}
-            - pattern: DESCRIPTION
-              replacement: Name and raw jps url of the consumer frontend environment
-      - replaceInFile:
-          nodeType: docker
-          path: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
-          replacements:
-            - pattern: GLOBAL_OR_SYSTEM
-              replacement: GLOBAL
-            - pattern: CREDENTIAL_ID
-              replacement: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
-            - pattern: SECRET
-              replacement: ${settings.mgmtFrontendEnvName}
-            - pattern: DESCRIPTION
-              replacement: Name and raw jps url of the management frontend environment
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.GITHUB_CREDENTIALS_ID}
+          username: ${settings.githubUsername}
+          password: ${settings.githubPassword}
+          description: Github credentials
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.BITBUCKET_CREDENTIALS_ID}
+          username: ${settings.bitbucketUsername}
+          password: ${settings.bitbucketPassword}
+          description: Bitbucket credentials
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.DOCKER_CREDENTIALS_ID}
+          username: ${settings.dockerUsername}
+          password: ${settings.dockerPassword}
+          description: Docker hub credentials
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.JELASTIC_USER_CREDENTIALS_ID}
+          username: ${settings.jelasticUsername}
+          password: ${settings.jelasticPassword}
+          description: Jelastic user credentials
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.JELASTIC_APP_CREDENTIALS_ID}
+          username: ${settings.jelasticUrl}
+          password: ${settings.jelasticAppId}
+          description: Jelastic app credentials (hoster url and app id)
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.BACKEND_CREDENTIALS_ID}
+          username: ${settings.backendEnvName}
+          password: ${settings.backendJps}
+          description: Name and raw jps url of the backend environment
+          nodeGroup: cp
+      - fillSecretCredentials:
+          filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.POSTGRES_CREDENTIALS_ID}
+          secret: ${globals.PG_DATABASE_URL}
+          description: Postgres URL
+          nodeGroup: cp
+      - fillSecretCredentials:
+          filename: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
+          secret: ${settings.consumerFrontendEnvName}
+          description: Name and raw jps url of the consumer frontend environment
+          nodeGroup: cp
+      - fillSecretCredentials:
+          filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
+          secret: ${settings.mgmtFrontendEnvName}
+          description: Name and raw jps url of the management frontend environment
+          nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
