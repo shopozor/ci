@@ -149,7 +149,7 @@ application:
           - method: environment.file.ReplaceInBody
             params: 
               path: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
-              pattern: GITHUB_CREDENTIALS
+              pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
               nodeGroup: cp
       - restart
