@@ -1,6 +1,5 @@
 ant
 antisamy-markup-formatter
-bitbucket-pullrequest-builder
 build-timeout
 credentials
 cucumber-reports

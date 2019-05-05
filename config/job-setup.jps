@@ -9,7 +9,6 @@ application:
   globals:
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
-    BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
     HIDORA_CREDENTIALS_ID: hidora-credentials
 
   settings:
@@ -54,8 +53,6 @@ application:
           replacements:
             - pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
-            - pattern: BITBUCKET_CREDENTIAL_ID
-              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
       - cmd [cp]:
         - cd /tmp
         - wget ${baseUrl}/scripts/${globals.JOB_CREATION_SCRIPT} -O /tmp/${globals.JOB_CREATION_SCRIPT}

@@ -21,17 +21,6 @@ application:
         type: string
         inputType: password
         required: true
-      - type: spacer
-        caption: Bitbucket credentials
-      - name: bitbucketUsername
-        caption: User
-        type: string
-        required: true
-      - name: bitbucketPassword
-        caption: Password
-        type: string
-        inputType: password
-        required: true
       - type: spacer 
         caption: Docker credentials
       - name: dockerUsername
@@ -86,7 +75,6 @@ application:
     CREDENTIAL_FILENAME: credential.xml
     SECRET_CREDENTIAL_FILENAME: secret.xml
     GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
-    BITBUCKET_CREDENTIAL_FILENAME: bitbucket-credentials.xml
     DOCKER_CREDENTIAL_FILENAME: docker-credentials.xml
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
@@ -97,7 +85,6 @@ application:
     CREDENTIAL_SCRIPT: CreateCredential.sh
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
-    BITBUCKET_CREDENTIALS_ID: bitbucket-credentials
     DOCKER_CREDENTIALS_ID: docker-credentials
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
@@ -156,14 +143,14 @@ application:
           - method: environment.file.ReplaceInBody
             params: 
               path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
-              pattern: GITHUB_CREDENTIALS
+              pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
               nodeGroup: cp
           - method: environment.file.ReplaceInBody
             params: 
               path: /var/jenkins_home/${globals.GLOBAL_LIBRARIES_PLUGIN_CONFIG}
-              pattern: BITBUCKET_CREDENTIALS
-              replacement: ${globals.BITBUCKET_CREDENTIALS_ID}
+              pattern: GITHUB_CREDENTIALS
+              replacement: ${globals.GITHUB_CREDENTIALS_ID}
               nodeGroup: cp
       - restart
     installAptPackages:
@@ -242,7 +229,6 @@ application:
           - cd /tmp
           - wget --quiet ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BITBUCKET_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
@@ -258,14 +244,6 @@ application:
           username: ${settings.githubUsername}
           password: ${settings.githubPassword}
           description: Github credentials
-          nodeGroup: cp
-      - fillPasswordCredentials:
-          filename: /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.BITBUCKET_CREDENTIALS_ID}
-          username: ${settings.bitbucketUsername}
-          password: ${settings.bitbucketPassword}
-          description: Bitbucket credentials
           nodeGroup: cp
       - fillPasswordCredentials:
           filename: /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
@@ -324,7 +302,6 @@ application:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BITBUCKET_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
