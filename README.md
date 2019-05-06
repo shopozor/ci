@@ -46,6 +46,9 @@ We took the decision to implement our CI/CD with Jenkins, even though there are 
 
 ### Credentials setup
 
+- needs github full permissions
+- absolutely needs ghprb shared secret
+
 ### Jobs setup
 
 ### Specific setup to our product

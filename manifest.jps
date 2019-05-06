@@ -13,13 +13,17 @@ application:
       - type: spacer
         caption: Github credentials
       - name: githubUsername
-        caption: User
+        caption: User (needs full permissions)
         type: string
         required: true
       - name: githubPassword
         caption: Password
         type: string
         inputType: password
+        required: true
+      - name: ghprbSecret
+        caption: GHPRB Secret 
+        type: string
         required: true
       - type: spacer 
         caption: Docker credentials
@@ -145,6 +149,12 @@ application:
               path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
               pattern: GITHUB_CREDENTIAL_ID
               replacement: ${globals.GITHUB_CREDENTIALS_ID}
+              nodeGroup: cp
+          - method: environment.file.ReplaceInBody
+            params: 
+              path: /var/jenkins_home/${globals.GHPRBTRIGGER_PLUGIN_CONFIG}
+              pattern: GHPRB_SHARED_SECRET
+              replacement: ${settings.ghprbSecret}
               nodeGroup: cp
           - method: environment.file.ReplaceInBody
             params: 
