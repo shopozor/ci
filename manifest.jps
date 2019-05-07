@@ -165,7 +165,8 @@ application:
       - restart
     installAptPackages:
       - installJq 
-      - installYarn        
+      - installYarn
+      - installSaleorDependencies     
     installJq:
       cmd [cp]:
         - apt install jq
@@ -176,6 +177,9 @@ application:
         - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
         - apt update 
         - apt install -y yarn nodejs
+    installSaleorDependencies:
+      cmd [cp]:
+        - apt install -y build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
     fillPasswordCredentials:
       - api:
           - method: environment.file.ReplaceInBody

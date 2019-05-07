@@ -34,6 +34,8 @@ application:
       - setupJob:
           jobName: shopozor-backend-acceptance
       - setupJob:
+          jobName: shopozor-backend-unit
+      - setupJob:
           jobName: shopozor-management-frontend-acceptance
       - setupJob:
           jobName: shopozor-consumer-frontend-acceptance
