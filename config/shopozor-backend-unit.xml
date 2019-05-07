@@ -48,7 +48,7 @@
           <excludedRegions></excludedRegions>
           <extensions>
             <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-              <commitStatusContext></commitStatusContext>
+              <commitStatusContext>unit tests</commitStatusContext>
               <triggeredStatus></triggeredStatus>
               <startedStatus></startedStatus>
               <statusUrl></statusUrl>
