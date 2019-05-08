@@ -46,7 +46,7 @@ In its simplest configuration, our CI environment looks like this:
 
 It runs a [docker image of jenkins](https://hub.docker.com/r/jenkins/jenkins) as well as a Postgresql database. The database is required for some of our backend tests.
 
-### Necessary software addtions
+### Necessary software additions
 
 Out of the box, the jenkins docker image isn't provided with all the tools we need for our CI/CD. Additionally, we need the following software:
 
@@ -58,7 +58,10 @@ in our pipelines.
 
 ### Necessary Jenkins plugins
 
-The list of necessary plugins can be found [here](config/plugins/listOfJenkinsPlugins.txt).
+The list of necessary plugins can be found [here](config/plugins/listOfJenkinsPlugins.txt). Among others,
+
+* **ghprb** is responsible for triggering the relevant tests on Jenkins upon pull request
+* **embeddable-build-status** is responsible for making the Jenkins builds statuses available so that they can be displayed in the corresponding repositories' `README`s
 
 ### Credentials setup
 
@@ -87,11 +90,13 @@ of the [GhprbTrigger config](config/plugins/org.jenkinsci.plugins.ghprb.GhprbTri
 
 ![Ghprb webhook secret](doc/img/ghprb-webhook-secret.png)
 
-Note that the webhook gets automatically created in the Github repository upon pull request creation. The secret will not be filled correctly though. Therefore, the first time you make a PR, no Jenkins job will be triggered, but the webhook will be created. Then you just fill it up with the relevant secret and comment the pull request with
+Note that the webhook gets automatically created in the Github repository upon pull request creation. The secret will not be filled correctly though. Therefore, the first time a PR is made, no Jenkins job will be triggered, but the webhook will be created. Then it just needs to be fed up with the relevant secret. After that, the following comment in the pull request
 
 ```
 retest this please
 ```
+
+will trigger the Jenkins build accordingly.
 
 - the trigger phrases are documented [here](https://github.com/jenkinsci/ghprb-plugin)
 
@@ -100,7 +105,7 @@ The global GHPRB plugin configuration can be found [here](config/plugins/org.jen
 * unit
 * acceptance
 
-tests are triggered. Their results is returned back to the pull request upon completion:
+tests are triggered. Their results are returned back to the pull request upon completion:
 
 ![Pull request tests completion](doc/img/pr-tests-completion.png)
 
@@ -133,7 +138,7 @@ The configuration of the global shared libraries happens [here](config/plugins/o
 
 ### Branch protection rules
 
-Any push to our `master` or `dev` branch will be rejected, excepted it was initiated by our `softozor-deployer` user:
+Any push to our `master` or `dev` branch will be rejected, except it was initiated by our `softozor-deployer` user:
 
 ![Github branch protection rules](doc/img/github-branch-protection-rules.png)
 
