@@ -5,6 +5,7 @@ credentials
 cucumber-reports
 docker-java-api
 email-ext
+embeddable-build-status
 ghprb
 github-branch-source
 gradle
