@@ -3,7 +3,52 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty/>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.42.0">
+          <spec>H/5 * * * *</spec>
+          <configVersion>3</configVersion>
+          <adminlist></adminlist>
+          <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
+          <orgslist>softozor</orgslist>
+          <cron>H/5 * * * *</cron>
+          <buildDescTemplate></buildDescTemplate>
+          <onlyTriggerPhrase>true</onlyTriggerPhrase>
+          <useGitHubHooks>true</useGitHubHooks>
+          <permitAll>false</permitAll>
+          <whitelist></whitelist>
+          <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+          <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
+          <whiteListTargetBranches>
+            <org.jenkinsci.plugins.ghprb.GhprbBranch>
+              <branch></branch>
+            </org.jenkinsci.plugins.ghprb.GhprbBranch>
+          </whiteListTargetBranches>
+          <blackListTargetBranches>
+            <org.jenkinsci.plugins.ghprb.GhprbBranch>
+              <branch></branch>
+            </org.jenkinsci.plugins.ghprb.GhprbBranch>
+          </blackListTargetBranches>
+          <gitHubAuthId>GHPRB_TRIGGER_AUTH_ID</gitHubAuthId>
+          <triggerPhrase>test consumer e2e</triggerPhrase>
+          <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
+          <blackListCommitAuthor></blackListCommitAuthor>
+          <blackListLabels></blackListLabels>
+          <whiteListLabels></whiteListLabels>
+          <includedRegions></includedRegions>
+          <excludedRegions></excludedRegions>
+          <extensions>
+            <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+              <commitStatusContext>Consumer e2e tests</commitStatusContext>
+              <triggeredStatus></triggeredStatus>
+              <startedStatus></startedStatus>
+              <statusUrl></statusUrl>
+              <addTestResults>false</addTestResults>
+            </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+          </extensions>
+        </org.jenkinsci.plugins.ghprb.GhprbTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.66">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
