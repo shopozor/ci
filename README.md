@@ -112,11 +112,17 @@ In the PR comments,
 
 ### Jobs setup
 
+The jobs are setup automatically by means of the Jenkins CLI. Their configuration can be found in `config/shopozor-*.xml`:
+
+![Jenkins jobs](doc/img/jenkins-jobs.png)
+
 ### Pipeline configuration
+
+Jenkins pipelines can nicely be configured by code. Extensive documentation can be found [here](https://jenkins.io/doc/book/pipeline/).
 
 #### Global shared libraries
 
-Because our e2e pipelines share the very same code, they can share it over the [frontend applications' common code](https://github.com/softozor/shopozor-common-frontend):
+Because our e2e pipelines share the very same code, they can do so over the [frontend applications' common code](https://github.com/softozor/shopozor-common-frontend):
 
 * the [common callable pipeline](https://github.com/softozor/shopozor-common-frontend/blob/dev/vars/frontendE2ePipeline.groovy)
 * the [common pipeline helpers](https://github.com/softozor/shopozor-common-frontend/blob/dev/src/ch/softozor/pipeline/Helpers.groovy)
@@ -125,21 +131,23 @@ The configuration of the global shared libraries happens [here](config/plugins/o
 
 ## Github repo configuration
 
-### Github pull request builder webhook
+### Branch protection rules
+
+Any push to our `master` or `dev` branch will be rejected, excepted it was initiated by our `softozor-deployer` user:
+
+![Github branch protection rules](doc/img/github-branch-protection-rules.png)
+
+### GHPRB webhook setup
+
+As soon as a pull request is issued, the webhook is automatically added to the repository's webhooks:
 
 ![ghprb webhook](doc/img/ghprb-webhook.png)
 
+It is critical that the webhook's secret be filled with the corresponding value set in Jenkins global configuration of the GHPRB plugin. In addition, the webhook needs to be triggered by **everything**.
+
 ![ghprb webhook config](doc/img/ghprb-webhook-config.png)
 
-- present branch protection setup (master & dev)
-- webhook (secret + "Send me everything")
-- absolutely needs ghprb shared secret
-
-
-
-### Specific setup to our product
-
-#### Postgres installation
+The list of recent deliveries clearly shows whether the webhook gets triggered and with what payload and result.
 
 ## Next steps
 
