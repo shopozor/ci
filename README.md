@@ -47,8 +47,18 @@ We took the decision to implement our CI/CD with Jenkins, even though there are 
 ### Credentials setup
 
 - needs github full permissions
-- absolutely needs ghprb shared secret
+- needs to disable 2FA
+
+### Github repo configuration
+
 - present branch protection setup (master & dev)
+- webhook (secret + "Send me everything")
+- absolutely needs ghprb shared secret
+
+### GHPRB Plugin configuration
+
+- absolutely needs ghprb shared secret
+- consider whitelist as admins? --> rather no
 
 ### Jobs setup
 
@@ -59,3 +69,7 @@ We took the decision to implement our CI/CD with Jenkins, even though there are 
 ## Pipeline configuration
 
 - shared libs
+
+## Next steps
+
+- use Dockerfile directly in pipeline (https://jenkins.io/doc/book/pipeline/docker/#dockerfile)
