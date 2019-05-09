@@ -91,7 +91,7 @@ application:
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
     BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
     CONSUMER_FRONTEND_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
-    MGMT_FRONTEND_CREDENTIAL_FILENAME: mgmt-frontend-name-credentials.xml
+    MGMT_FRONTEND_CREDENTIAL_FILENAME: management-frontend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     JOB_CREATION_SCRIPT: CreateJob.sh
     GITHUB_CREDENTIALS_ID: github-credentials
@@ -101,7 +101,7 @@ application:
     POSTGRES_CREDENTIALS_ID: postgres-credentials
     BACKEND_CREDENTIALS_ID: backend-name-credentials
     CONSUMER_FRONTEND_CREDENTIALS_ID: consumer-frontend-name-credentials
-    MGMT_FRONTEND_CREDENTIALS_ID: mgmt-frontend-name-credentials
+    MGMT_FRONTEND_CREDENTIALS_ID: management-frontend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
     PG_DB_NAME: saleor
