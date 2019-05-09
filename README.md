@@ -154,6 +154,12 @@ It is critical that the webhook's secret be filled with the corresponding value 
 
 The list of recent deliveries clearly shows whether the webhook gets triggered and with what payload and result.
 
+## Typical Jelastic configuration
+
+The Jelastic installation requires following form to be filled:
+
+![Jelastic configuration form](doc/img/jelastic-configuration-form.png)
+
 ## Next steps
 
 - use Dockerfile directly in pipeline (https://jenkins.io/doc/book/pipeline/docker/#dockerfile)

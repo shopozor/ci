@@ -13,7 +13,7 @@ application:
       - type: spacer
         caption: Github credentials
       - name: githubUsername
-        caption: User (needs full permissions)
+        caption: Full permissions user
         type: string
         required: true
       - name: githubPassword
@@ -56,24 +56,29 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: Env names
+        caption: E2e env names
       - name: backendEnvName
-        caption: Backend name
+        caption: Backend
         type: string
         required: true
-      - name: backendJpsBaseUrl
-        caption: Backend JPS Base Url
-        default: https://raw.githubusercontent.com/softozor/shopozor-backend/dev/e2e/
-        type: string
-        required: true
+        default: shopozor-backend-e2e
       - name: consumerFrontendEnvName
-        caption: Consumer frontend name
+        caption: Consumer frontend
         type: string
         required: true
+        default: shopozor-consumer-frontend-e2e
       - name: mgmtFrontendEnvName
-        caption: Mgmt frontend name
+        caption: Mgmt frontend
         type: string
         required: true
+        default: shopozor-management-frontend-e2e
+      - type: spacer
+        caption: E2e Backend JPS
+      - name: backendJpsBaseUrl
+        caption: Base Url
+        type: string
+        required: true
+        default: https://raw.githubusercontent.com/softozor/shopozor-backend/dev/e2e/
 
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
