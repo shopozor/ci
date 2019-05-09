@@ -61,8 +61,9 @@ application:
         caption: Backend name
         type: string
         required: true
-      - name: backendJps
-        caption: Backend JPS
+      - name: backendJpsBaseUrl
+        caption: Backend JPS Base Url
+        default: https://raw.githubusercontent.com/softozor/shopozor-backend/dev/e2e/
         type: string
         required: true
       - name: consumerFrontendEnvName
@@ -288,8 +289,8 @@ application:
           globalOrSystem: GLOBAL
           credentialID: ${globals.BACKEND_CREDENTIALS_ID}
           username: ${settings.backendEnvName}
-          password: ${settings.backendJps}
-          description: Name and raw jps url of the backend environment
+          password: ${settings.backendJpsBaseUrl}
+          description: Name and base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
