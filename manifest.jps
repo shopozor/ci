@@ -62,6 +62,7 @@ application:
         type: string
         required: true
         default: shopozor-backend-e2e
+      # TODO: get rid of these names if the pipeline parameter makes the job
       - name: consumerFrontendEnvName
         caption: Consumer frontend
         type: string
@@ -309,14 +310,14 @@ application:
           globalOrSystem: GLOBAL
           credentialID: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
           secret: ${settings.consumerFrontendEnvName}
-          description: Name and raw jps url of the consumer frontend environment
+          description: Name of the consumer frontend environment
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
           secret: ${settings.mgmtFrontendEnvName}
-          description: Name and raw jps url of the management frontend environment
+          description: Name of the management frontend environment
           nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
