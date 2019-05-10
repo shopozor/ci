@@ -62,7 +62,6 @@ application:
         type: string
         required: true
         default: shopozor-backend-e2e
-      # TODO: get rid of these names if the pipeline parameter makes the job
       - name: consumerFrontendEnvName
         caption: Consumer frontend
         type: string
