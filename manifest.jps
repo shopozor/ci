@@ -72,7 +72,7 @@ application:
         caption: Mgmt frontend
         type: string
         required: true
-        default: shopozor-management-frontend-e2e
+        default: shopozor-mgmt-frontend-e2e
       - type: spacer
         caption: E2e Backend JPS
       - name: backendJpsBaseUrl
