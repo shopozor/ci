@@ -164,8 +164,8 @@ application:
     - installDocker
     - installPlugins
     - installAptPackages
-    - setupCredentials
     - createUserAccounts
+    - setupCredentials
     - installPostgresqlDB
     - setupJobs
     - sendEmailWithPasswords
@@ -393,7 +393,7 @@ application:
     createUserAccount:
       - cmd [cp]:
         - cd /tmp
-        - wget ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
+        - wget --quiet ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT} "${this.username}" "${this.password}" "admin" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
     installPostgresqlDB:
