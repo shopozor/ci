@@ -56,26 +56,26 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: Consumer e2e env names
+        caption: Consumer e2e
       - name: consumerBackendEnvName
         caption: Backend
         type: string
         required: true
         default: shopozor-consumer-backend-e2e
       - name: consumerFrontendEnvName
-        caption: Consumer frontend
+        caption: Frontend
         type: string
         required: true
         default: shopozor-consumer-frontend-e2e
       - type: spacer
-        caption: Mgmt e2e env names
+        caption: Mgmt e2e
       - name: mgmtBackendEnvName
         caption: Backend
         type: string
         required: true
         default: shopozor-mgmt-backend-e2e
       - name: mgmtFrontendEnvName
-        caption: Mgmt frontend
+        caption: Frontend
         type: string
         required: true
         default: shopozor-mgmt-frontend-e2e
@@ -93,45 +93,21 @@ application:
         type: string
         required: true
         default: zadigus 
-      - name: userPassword1
-        caption: Password
-        type: string
-        inputType: password
-        required: true
-        default: ${fn.password(10)}
       - name: username2
         caption: Username 2
         type: string
         required: true
         default: shikamu
-      - name: userPassword2
-        caption: Password
-        type: string
-        inputType: password
-        required: true
-        default: ${fn.password(10)}
       - name: username3
         caption: Username 3
         type: string
         required: true
         default: donnerc
-      - name: userPassword3
-        caption: Password
-        type: string
-        inputType: password
-        required: true
-        default: ${fn.password(10)}
       - name: username4
         caption: Username 4
         type: string
         required: true
         default: comteharbour
-      - name: userPassword4
-        caption: Password
-        type: string
-        inputType: password
-        required: true
-        default: ${fn.password(10)}
 
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
@@ -164,6 +140,11 @@ application:
     PG_DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
+    USER_PASSWORD1: ${fn.password(10)}
+    USER_PASSWORD2: ${fn.password(10)}
+    USER_PASSWORD3: ${fn.password(10)}
+    USER_PASSWORD4: ${fn.password(10)}
+
         
   env:
     topology:
@@ -399,16 +380,16 @@ application:
     createUserAccounts:
       - createUserAccount:
           username: ${settings.username1}
-          password: ${settings.userPassword1}
+          password: ${globals.USER_PASSWORD1}
       - createUserAccount:
           username: ${settings.username2}
-          password: ${settings.userPassword2}
+          password: ${globals.USER_PASSWORD2}
       - createUserAccount:
           username: ${settings.username3}
-          password: ${settings.userPassword3}
+          password: ${globals.USER_PASSWORD3}
       - createUserAccount:
           username: ${settings.username4}
-          password: ${settings.userPassword4}
+          password: ${globals.USER_PASSWORD4}
     createUserAccount:
       - cmd [cp]:
         - cd /tmp
@@ -440,6 +421,11 @@ application:
           **PostgreSQL URL**: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
           # PgAdmin
           **webadmin**: ${globals.PG_PASSWORD}
+          # User accounts
+          * **${settings.username1}**: ${globals.USER_PASSWORD1}
+          * **${settings.username2}**: ${globals.USER_PASSWORD2}
+          * **${settings.username3}**: ${globals.USER_PASSWORD3}
+          * **${settings.username4}**: ${globals.USER_PASSWORD4}
     restart:  
       - restartContainers:
         - nodeGroup: cp
