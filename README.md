@@ -31,12 +31,21 @@ We took the decision to implement our CI/CD with Jenkins, even though there are 
 * External repositories not supported in the free plan
 * We could host our repos on Gitlab but then we’d have to pay for its hosting, which would need to be a 24/7 hosting, making it therefore a pretty expensive choice
 
-
 ### Why Jenkins?
 
 * Very easy to configure
 * Completely free
 * We can live with a partially available Jenkins server, some kind of on-demand Jenkins until the product's first release; as Jenkins only triggers builds, it's more than fine.
+
+## Implemented workflows
+
+### Isolated component integration
+
+Each of our applications (`shopozor-backend`, `shopozor-consumer-frontend`, and `shopozor-management-frontend`) is unit- and acceptance-tested in isolation of the other components. This is done inside of the Jenkins docker container which is provided with the relevant tools (e.g. `yarn`).
+
+### Interacting components integration
+
+The two major use cases of our product, the Consumer and the Management use cases, are tested end-to-end. That means that all the necessary applications are started on their own Jelastic environments and the tests are run on them. The test results are then gathered from those environments and referenced on our Jenkins job.
 
 ## Jenkins setup on Jelastic
 
