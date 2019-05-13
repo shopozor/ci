@@ -149,6 +149,15 @@ application:
   env:
     topology:
         nodes:
+          - nodeGroup: bl 
+            nodeType: nginx-dockerized
+            tag: 1.14.2
+            displayName: Node balancing
+            count: 1
+            fixedCloudlets: 1
+            cloudlets: 4
+            env:
+              DOCKER_EXPOSED_PORT: 22,80,443
           - image: jenkins/jenkins:lts
             count: 1
             cloudlets: 16
@@ -168,6 +177,7 @@ application:
     - setupCredentials
     - installPostgresqlDB
     - setupJobs
+    - setupSSL
     - sendEmailWithPasswords
     
   actions:
@@ -413,6 +423,11 @@ application:
           settings:
             username: admin 
             password: doYouReallyBelieveThisIsTheAdminPassword?
+    setupSSL:
+      - install:
+          jps: https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps
+          nodeGroup: bl
+          envName: ${env.envName}
     sendEmailWithPasswords:
       return:
         result: success
