@@ -56,22 +56,29 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: E2e env names
-      - name: backendEnvName
+        caption: Consumer e2e
+      - name: consumerBackendEnvName
         caption: Backend
         type: string
         required: true
-        default: shopozor-backend-e2e
+        default: shopozor-consumer-backend-e2e
       - name: consumerFrontendEnvName
-        caption: Consumer frontend
+        caption: Frontend
         type: string
         required: true
         default: shopozor-consumer-frontend-e2e
-      - name: mgmtFrontendEnvName
-        caption: Mgmt frontend
+      - type: spacer
+        caption: Mgmt e2e
+      - name: mgmtBackendEnvName
+        caption: Backend
         type: string
         required: true
-        default: shopozor-management-frontend-e2e
+        default: shopozor-mgmt-backend-e2e
+      - name: mgmtFrontendEnvName
+        caption: Frontend
+        type: string
+        required: true
+        default: shopozor-mgmt-frontend-e2e
       - type: spacer
         caption: E2e Backend JPS
       - name: backendJpsBaseUrl
@@ -79,6 +86,28 @@ application:
         type: string
         required: true
         default: https://raw.githubusercontent.com/softozor/shopozor-backend/dev/e2e/
+      - type: spacer
+        caption: User accounts
+      - name: username1
+        caption: Username 1
+        type: string
+        required: true
+        default: zadigus 
+      - name: username2
+        caption: Username 2
+        type: string
+        required: true
+        default: shikamu
+      - name: username3
+        caption: Username 3
+        type: string
+        required: true
+        default: donnerc
+      - name: username4
+        caption: Username 4
+        type: string
+        required: true
+        default: comteharbour
 
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
@@ -89,17 +118,19 @@ application:
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
-    BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
+    CONSUMER_BACKEND_CREDENTIAL_FILENAME: consumer-backend-name-credentials.xml
+    MGMT_BACKEND_CREDENTIAL_FILENAME: management-backend-name-credentials.xml
     CONSUMER_FRONTEND_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
     MGMT_FRONTEND_CREDENTIAL_FILENAME: management-frontend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
-    JOB_CREATION_SCRIPT: CreateJob.sh
+    USER_ACCOUNT_CREATION_SCRIPT: CreateUserAccount.sh
     GITHUB_CREDENTIALS_ID: github-credentials
     DOCKER_CREDENTIALS_ID: docker-credentials
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
-    BACKEND_CREDENTIALS_ID: backend-name-credentials
+    CONSUMER_BACKEND_CREDENTIALS_ID: consumer-backend-name-credentials
+    MGMT_BACKEND_CREDENTIALS_ID: management-backend-name-credentials
     CONSUMER_FRONTEND_CREDENTIALS_ID: consumer-frontend-name-credentials
     MGMT_FRONTEND_CREDENTIALS_ID: management-frontend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
@@ -109,10 +140,24 @@ application:
     PG_DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
+    USER_PASSWORD1: ${fn.password(10)}
+    USER_PASSWORD2: ${fn.password(10)}
+    USER_PASSWORD3: ${fn.password(10)}
+    USER_PASSWORD4: ${fn.password(10)}
+
         
   env:
     topology:
         nodes:
+          - nodeGroup: bl 
+            nodeType: nginx-dockerized
+            tag: 1.14.2
+            displayName: Node balancing
+            count: 1
+            fixedCloudlets: 1
+            cloudlets: 4
+            env:
+              DOCKER_EXPOSED_PORT: 22,80,443
           - image: jenkins/jenkins:lts
             count: 1
             cloudlets: 16
@@ -128,9 +173,11 @@ application:
     - installDocker
     - installPlugins
     - installAptPackages
+    - createUserAccounts
     - setupCredentials
     - installPostgresqlDB
     - setupJobs
+    - setupSSL
     - sendEmailWithPasswords
     
   actions:
@@ -252,7 +299,8 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
@@ -290,12 +338,20 @@ application:
           description: Jelastic app credentials (hoster url and app id)
           nodeGroup: cp
       - fillPasswordCredentials:
-          filename: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
+          filename: /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
-          credentialID: ${globals.BACKEND_CREDENTIALS_ID}
-          username: ${settings.backendEnvName}
+          credentialID: ${globals.CONSUMER_BACKEND_CREDENTIALS_ID}
+          username: ${settings.consumerBackendEnvName}
           password: ${settings.backendJpsBaseUrl}
-          description: Name and base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
+          description: Name and base raw jps url of the consumer backend environment (it is intended to be completed with /manifest.jps)
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.MGMT_BACKEND_CREDENTIALS_ID}
+          username: ${settings.mgmtBackendEnvName}
+          password: ${settings.backendJpsBaseUrl}
+          description: Name and base raw jps url of the management backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
@@ -309,14 +365,14 @@ application:
           globalOrSystem: GLOBAL
           credentialID: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
           secret: ${settings.consumerFrontendEnvName}
-          description: Name and raw jps url of the consumer frontend environment
+          description: Name of the consumer frontend environment
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
           secret: ${settings.mgmtFrontendEnvName}
-          description: Name and raw jps url of the management frontend environment
+          description: Name of the management frontend environment
           nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
@@ -326,10 +382,30 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
       - restart
+    createUserAccounts:
+      - createUserAccount:
+          username: ${settings.username1}
+          password: ${globals.USER_PASSWORD1}
+      - createUserAccount:
+          username: ${settings.username2}
+          password: ${globals.USER_PASSWORD2}
+      - createUserAccount:
+          username: ${settings.username3}
+          password: ${globals.USER_PASSWORD3}
+      - createUserAccount:
+          username: ${settings.username4}
+          password: ${globals.USER_PASSWORD4}
+    createUserAccount:
+      - cmd [cp]:
+        - cd /tmp
+        - wget --quiet ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
+        - chmod u+x /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
+        - /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT} "${this.username}" "${this.password}" "admin" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
     installPostgresqlDB:
       - cmd[sqldb]:
           - jem passwd set -p ${globals.PG_PASSWORD}
@@ -347,6 +423,11 @@ application:
           settings:
             username: admin 
             password: doYouReallyBelieveThisIsTheAdminPassword?
+    setupSSL:
+      - install:
+          jps: https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps
+          nodeGroup: bl
+          envName: ${env.envName}
     sendEmailWithPasswords:
       return:
         result: success
@@ -355,6 +436,11 @@ application:
           **PostgreSQL URL**: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
           # PgAdmin
           **webadmin**: ${globals.PG_PASSWORD}
+          # User accounts
+          * **${settings.username1}**: ${globals.USER_PASSWORD1}
+          * **${settings.username2}**: ${globals.USER_PASSWORD2}
+          * **${settings.username3}**: ${globals.USER_PASSWORD3}
+          * **${settings.username4}**: ${globals.USER_PASSWORD4}
     restart:  
       - restartContainers:
         - nodeGroup: cp
