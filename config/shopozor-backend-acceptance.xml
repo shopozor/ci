@@ -68,13 +68,15 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
+          <name>origin</name>
+          <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
           <url>https://github.com/softozor/shopozor-backend</url>
           <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>*/dev</name>
+          <name>${sha1}</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -90,7 +92,7 @@
       </extensions>
     </scm>
     <scriptPath>Jenkinsfile</scriptPath>
-    <lightweight>true</lightweight>
+    <lightweight>false</lightweight>
   </definition>
   <triggers/>
   <disabled>false</disabled>
