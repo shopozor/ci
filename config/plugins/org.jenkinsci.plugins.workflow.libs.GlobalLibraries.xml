@@ -6,7 +6,7 @@
       <retriever class="org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever">
         <scm class="jenkins.plugins.git.GitSCMSource" plugin="git@3.9.4">
           <id>GLOBAL_LIBRARIES_PLUGIN_ID</id>
-          <remote>https://github.com/softozor/shopozor-common-frontend</remote>
+          <remote>https://github.com/shopozor/common-frontend</remote>
           <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
           <traits>
             <jenkins.plugins.git.traits.BranchDiscoveryTrait/>

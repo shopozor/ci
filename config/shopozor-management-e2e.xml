@@ -10,7 +10,7 @@
           <configVersion>3</configVersion>
           <adminlist></adminlist>
           <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
-          <orgslist>softozor</orgslist>
+          <orgslist>shopozor</orgslist>
           <cron>H/5 * * * *</cron>
           <buildDescTemplate></buildDescTemplate>
           <onlyTriggerPhrase>true</onlyTriggerPhrase>
@@ -55,7 +55,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/softozor/shopozor-management-frontend</url>
+          <url>https://github.com/shopozor/management-frontend</url>
           <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>

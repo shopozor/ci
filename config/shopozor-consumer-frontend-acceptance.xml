@@ -19,7 +19,7 @@
           <configVersion>3</configVersion>
           <adminlist></adminlist>
           <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
-          <orgslist>softozor</orgslist>
+          <orgslist>shopozor</orgslist>
           <cron>H/5 * * * *</cron>
           <buildDescTemplate></buildDescTemplate>
           <onlyTriggerPhrase>false</onlyTriggerPhrase>
@@ -59,7 +59,7 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.4">
-      <projectUrl>https://github.com/softozor/shopozor-consumer-frontend/</projectUrl>
+      <projectUrl>https://github.com/shopozor/consumer-frontend/</projectUrl>
       <displayName></displayName>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
   </properties>
@@ -70,7 +70,7 @@
         <hudson.plugins.git.UserRemoteConfig>
           <name>origin</name>
           <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
-          <url>https://github.com/softozor/shopozor-consumer-frontend</url>
+          <url>https://github.com/shopozor/consumer-frontend</url>
           <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
