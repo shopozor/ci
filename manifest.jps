@@ -4,7 +4,7 @@ application:
   id: shopozor-ci
   name: Shopozor Continuous Integration
   version: 0.0
-  baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
+  baseUrl: https://raw.githubusercontent.com/shopozor/ci/master
 
   # if a local private registry is necessary, then add to the current manifest the manifest code from here: https://github.com/HidoraSwiss/manifest-registry/blob/master/manifest.jps
 
