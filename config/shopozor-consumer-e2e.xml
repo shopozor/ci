@@ -8,7 +8,7 @@
         <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.42.0">
           <spec>H/5 * * * *</spec>
           <configVersion>3</configVersion>
-          <adminlist></adminlist>
+          <adminlist>zadigus</adminlist>
           <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
           <orgslist>softozor</orgslist>
           <cron>H/5 * * * *</cron>
