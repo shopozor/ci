@@ -19,7 +19,7 @@
           <configVersion>3</configVersion>
           <adminlist></adminlist>
           <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
-          <orgslist>shopozor</orgslist>
+          <orgslist>softozor</orgslist>
           <cron>H/5 * * * *</cron>
           <buildDescTemplate></buildDescTemplate>
           <onlyTriggerPhrase>false</onlyTriggerPhrase>
