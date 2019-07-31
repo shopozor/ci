@@ -217,12 +217,12 @@ application:
               nodeGroup: cp
       - restart
     installAptPackages:
-      - installJq 
+      - installTools
+      - installSaleorDependencies
+    installTools:
+      - cmd [cp]:
+        - apt install jq dos2unix
       - installYarn
-      - installSaleorDependencies     
-    installJq:
-      cmd [cp]:
-        - apt install jq
     installYarn:
       cmd [cp]:
         - curl -sL https://deb.nodesource.com/setup_10.x | bash -
