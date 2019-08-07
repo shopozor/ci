@@ -32,10 +32,6 @@ application:
   actions:
     setupJobs:
       - setupJob:
-          jobName: shopozor-acceptance
-      - setupJob:
-          jobName: shopozor-unit
-      - setupJob:
           jobName: shopozor-backend-acceptance
       - setupJob:
           jobName: shopozor-backend-unit
