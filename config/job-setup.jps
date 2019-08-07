@@ -32,21 +32,33 @@ application:
   actions:
     setupJobs:
       - setupJob:
-          jobName: shopozor-backend-acceptance
+          jobName: backend-acceptance
       - setupJob:
-          jobName: shopozor-backend-unit
+          jobName: backend-unit
       - setupJob:
-          jobName: shopozor-management-frontend-acceptance
+          jobName: management-frontend-acceptance
       - setupJob:
-          jobName: shopozor-management-frontend-unit
+          jobName: management-frontend-unit
       - setupJob:
-          jobName: shopozor-consumer-frontend-acceptance
+          jobName: consumer-frontend-acceptance
       - setupJob:
-          jobName: shopozor-consumer-frontend-unit
+          jobName: consumer-frontend-unit
       - setupJob:
-          jobName: shopozor-management-e2e
+          jobName: backend-acceptance
       - setupJob:
-          jobName: shopozor-consumer-e2e
+          jobName: backend-unit-pr
+      - setupJob:
+          jobName: management-frontend-acceptance-pr
+      - setupJob:
+          jobName: management-frontend-unit-pr
+      - setupJob:
+          jobName: consumer-frontend-acceptance-pr
+      - setupJob:
+          jobName: consumer-frontend-unit-pr
+      - setupJob:
+          jobName: management-e2e
+      - setupJob:
+          jobName: consumer-e2e
       - restart
     setupJob:
       - upload:
