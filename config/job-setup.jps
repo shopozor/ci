@@ -44,7 +44,7 @@ application:
       - setupJob:
           jobName: consumer-frontend-unit
       - setupJob:
-          jobName: backend-acceptance
+          jobName: backend-acceptance-pr
       - setupJob:
           jobName: backend-unit-pr
       - setupJob:
