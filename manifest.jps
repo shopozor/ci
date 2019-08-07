@@ -177,6 +177,7 @@ application:
     - setupCredentials
     - installPostgresqlDB
     - setupJobs
+    - setupJobViews
     #- setupSSL
     - sendEmailWithPasswords
     
@@ -423,6 +424,13 @@ application:
           settings:
             username: admin 
             password: doYouReallyBelieveThisIsTheAdminPassword?
+    setupJobViews:
+      - cmd [cp]:
+        - mv /var/jenkins_home/config.xml /var/jenkins_home/config.xml.bak
+      - upload:
+        - nodeGroup: cp
+          sourcePath: ${baseUrl}/config/main-config.xml
+          destPath: /var/jenkins_home/config.xml
     #setupSSL:
     #  - install:
     #      jps: https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps
