@@ -138,8 +138,8 @@ Jenkins pipelines can nicely be configured by code. Extensive documentation can 
 
 Because our e2e pipelines share the very same code, they can do so over the [frontend applications' common code](https://github.com/softozor/shopozor-common-frontend):
 
-* the [common callable pipeline](https://github.com/softozor/shopozor-common-frontend/blob/dev/vars/frontendE2ePipeline.groovy)
-* the [common pipeline helpers](https://github.com/softozor/shopozor-common-frontend/blob/dev/src/ch/softozor/pipeline/Helpers.groovy)
+* the [common callable pipeline](https://github.com/shopozor/jenkins-shared-library/blob/master/vars/frontendE2ePipeline.groovy)
+* the [common pipeline helpers](https://github.com/shopozor/jenkins-shared-library/blob/master/src/ch/softozor/pipeline/Helpers.groovy)
 
 The configuration of the global shared libraries happens [here](config/plugins/org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml).
 
