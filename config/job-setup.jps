@@ -32,6 +32,8 @@ application:
   actions:
     setupJobs:
       - setupJob:
+          jobName: backend-deploy
+      - setupJob:
           jobName: backend-acceptance
       - setupJob:
           jobName: backend-unit
