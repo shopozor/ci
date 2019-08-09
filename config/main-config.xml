@@ -247,7 +247,7 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>backend-deployment</string>
+        <string>backend-deploy</string>
       </jobNames>
       <jobFilters/>
       <columns>
