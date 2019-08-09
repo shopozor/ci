@@ -160,7 +160,7 @@ application:
 #              DOCKER_EXPOSED_PORT: 22,80,443
           - image: jenkins/jenkins:lts
             count: 1
-            cloudlets: 16
+            cloudlets: 32
             nodeGroup: cp
           - nodeGroup: sqldb
             nodeType: postgresql
