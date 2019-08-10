@@ -34,7 +34,15 @@
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list"/>
-      <extensions/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <disableSubmodules>false</disableSubmodules>
+          <recursiveSubmodules>true</recursiveSubmodules>
+          <trackingSubmodules>false</trackingSubmodules>
+          <reference></reference>
+          <parentCredentials>true</parentCredentials>
+        </hudson.plugins.git.extensions.impl.SubmoduleOption>
+      </extensions>
     </scm>
     <scriptPath>production/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
