@@ -13,7 +13,6 @@ junit
 ldap
 matrix-auth
 pam-auth
-parameterized-trigger
 pipeline-github-lib
 ssh-slaves
 subversion
