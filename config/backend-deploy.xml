@@ -16,6 +16,18 @@
           <defaultValue>v0.0.1</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>STAGING_BRANCH</name>
+          <description>Staging branch</description>
+          <defaultValue>staging</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>DESCRIPTION</name>
+          <description>Tag description</description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -30,7 +42,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>${TAG}</name>
+          <name>${STAGING_BRANCH}</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
