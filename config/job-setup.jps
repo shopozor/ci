@@ -38,6 +38,8 @@ application:
       - setupJob:
           jobName: backend-unit
       - setupJob:
+          jobName: backend-spec
+      - setupJob:
           jobName: management-frontend-acceptance
       - setupJob:
           jobName: management-frontend-unit
