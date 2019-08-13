@@ -115,9 +115,6 @@ application:
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
     USER_PASSWORD1: ${fn.password(10)}
-    USER_PASSWORD2: ${fn.password(10)}
-    USER_PASSWORD3: ${fn.password(10)}
-    USER_PASSWORD4: ${fn.password(10)}
     consumerBackendEnvName: shopozor-consumer-backend-e2e
     consumerFrontendEnvName: shopozor-consumer-frontend-e2e
     mgmtBackendEnvName: shopozor-mgmt-backend-e2e
@@ -385,15 +382,6 @@ application:
       - createUserAccount:
           username: ${settings.username1}
           password: ${globals.USER_PASSWORD1}
-      - createUserAccount:
-          username: ${settings.username2}
-          password: ${globals.USER_PASSWORD2}
-      - createUserAccount:
-          username: ${settings.username3}
-          password: ${globals.USER_PASSWORD3}
-      - createUserAccount:
-          username: ${settings.username4}
-          password: ${globals.USER_PASSWORD4}
     createUserAccount:
       - cmd [cp]:
         - cd /tmp
@@ -439,9 +427,6 @@ application:
           **webadmin**: ${globals.PG_PASSWORD}
           # User accounts
           * **${settings.username1}**: ${globals.USER_PASSWORD1}
-          * **${settings.username2}**: ${globals.USER_PASSWORD2}
-          * **${settings.username3}**: ${globals.USER_PASSWORD3}
-          * **${settings.username4}**: ${globals.USER_PASSWORD4}
     restart:  
       - restartContainers:
         - nodeGroup: cp
