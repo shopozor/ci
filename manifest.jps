@@ -11,6 +11,17 @@ application:
   settings:
     fields:
       - type: spacer
+        caption: softozor.ch credentials
+      - name: softozorUsername
+        caption: Username
+        type: string
+        required: true
+      - name: softozorPassword
+        caption: Password
+        type: string
+        inputType: password
+        required: true
+      - type: spacer
         caption: Github credentials
       - name: githubUsername
         caption: Full permissions user
@@ -114,6 +125,7 @@ application:
     CREDENTIAL_FILENAME: credential.xml
     SECRET_CREDENTIAL_FILENAME: secret.xml
     GITHUB_CREDENTIAL_FILENAME: github-credentials.xml
+    SOFTOZOR_CREDENTIAL_FILENAME: softozor-credentials.xml
     DOCKER_CREDENTIAL_FILENAME: docker-credentials.xml
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
@@ -125,6 +137,7 @@ application:
     CREDENTIAL_SCRIPT: CreateCredential.sh
     USER_ACCOUNT_CREATION_SCRIPT: CreateUserAccount.sh
     GITHUB_CREDENTIALS_ID: github-credentials
+    SOFTOZOR_CREDENTIALS_ID: softozor-credentials
     DOCKER_CREDENTIALS_ID: docker-credentials
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
@@ -224,6 +237,7 @@ application:
       - cmd [cp]:
         - apt install jq dos2unix
       - installYarn
+      - installPickles
     installYarn:
       cmd [cp]:
         - curl -sL https://deb.nodesource.com/setup_10.x | bash -
@@ -231,6 +245,11 @@ application:
         - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
         - apt update 
         - apt install -y yarn nodejs
+    installPickles:
+      - cmd [cp]:
+        - apt install -y mono-runtime mono-complete
+        - wget https://github.com/picklesdoc/pickles/releases/download/v2.20.1/Pickles-exe-2.20.1.zip
+        - unzip Pickles-exe-2.20.1.zip -d /opt/pickles
     installSaleorDependencies:
       cmd [cp]:
         - apt install -y build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
@@ -297,6 +316,7 @@ application:
           - cd /tmp
           - wget --quiet ${baseUrl}/config/${globals.CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.GITHUB_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.SOFTOZOR_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
@@ -313,6 +333,14 @@ application:
           username: ${settings.githubUsername}
           password: ${settings.githubPassword}
           description: Github credentials
+          nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.SOFTOZOR_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.SOFTOZOR_CREDENTIALS_ID}
+          username: ${settings.softozorUsername}
+          password: ${settings.softozorPassword}
+          description: Softozor.ch credentials
           nodeGroup: cp
       - fillPasswordCredentials:
           filename: /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
@@ -379,6 +407,7 @@ application:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
           - chmod u+x /tmp/${globals.CREDENTIAL_SCRIPT}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.SOFTOZOR_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
