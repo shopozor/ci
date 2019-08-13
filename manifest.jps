@@ -67,30 +67,6 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: Consumer e2e
-      - name: consumerBackendEnvName
-        caption: Backend
-        type: string
-        required: true
-        default: shopozor-consumer-backend-e2e
-      - name: consumerFrontendEnvName
-        caption: Frontend
-        type: string
-        required: true
-        default: shopozor-consumer-frontend-e2e
-      - type: spacer
-        caption: Mgmt e2e
-      - name: mgmtBackendEnvName
-        caption: Backend
-        type: string
-        required: true
-        default: shopozor-mgmt-backend-e2e
-      - name: mgmtFrontendEnvName
-        caption: Frontend
-        type: string
-        required: true
-        default: shopozor-mgmt-frontend-e2e
-      - type: spacer
         caption: E2e Backend JPS
       - name: backendJpsBaseUrl
         caption: Base Url
@@ -104,21 +80,6 @@ application:
         type: string
         required: true
         default: zadigus 
-      - name: username2
-        caption: Username 2
-        type: string
-        required: true
-        default: shikamu
-      - name: username3
-        caption: Username 3
-        type: string
-        required: true
-        default: donnerc
-      - name: username4
-        caption: Username 4
-        type: string
-        required: true
-        default: comteharbour
 
   globals:
     JENKINS_PLUGINS_FILENAME: listOfJenkinsPlugins.txt
@@ -157,8 +118,11 @@ application:
     USER_PASSWORD2: ${fn.password(10)}
     USER_PASSWORD3: ${fn.password(10)}
     USER_PASSWORD4: ${fn.password(10)}
+    consumerBackendEnvName: shopozor-consumer-backend-e2e
+    consumerFrontendEnvName: shopozor-consumer-frontend-e2e
+    mgmtBackendEnvName: shopozor-mgmt-backend-e2e
+    mgmtFrontendEnvName: shopozor-mgmt-frontend-e2e
 
-        
   env:
     topology:
         nodes:
@@ -370,7 +334,7 @@ application:
           filename: /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.CONSUMER_BACKEND_CREDENTIALS_ID}
-          username: ${settings.consumerBackendEnvName}
+          username: ${globals.consumerBackendEnvName}
           password: ${settings.backendJpsBaseUrl}
           description: Name and base raw jps url of the consumer backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
@@ -378,7 +342,7 @@ application:
           filename: /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.MGMT_BACKEND_CREDENTIALS_ID}
-          username: ${settings.mgmtBackendEnvName}
+          username: ${globals.mgmtBackendEnvName}
           password: ${settings.backendJpsBaseUrl}
           description: Name and base raw jps url of the management backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
@@ -393,14 +357,14 @@ application:
           filename: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
-          secret: ${settings.consumerFrontendEnvName}
+          secret: ${globals.consumerFrontendEnvName}
           description: Name of the consumer frontend environment
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
-          secret: ${settings.mgmtFrontendEnvName}
+          secret: ${globals.mgmtFrontendEnvName}
           description: Name of the management frontend environment
           nodeGroup: cp
       - cmd [cp]:
