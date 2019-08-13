@@ -154,7 +154,7 @@ application:
     - setupJobViews
     #- setupSSL
     - sendEmailWithPasswords
-    
+
   actions:
     installDocker:
       - cmd [cp]:
@@ -196,7 +196,7 @@ application:
       - installSaleorDependencies
     installTools:
       - cmd [cp]:
-        - apt install jq dos2unix
+        - apt install jq dos2unix sshpass
       - installYarn
       - installPickles
     installYarn:
