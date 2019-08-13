@@ -42,9 +42,13 @@ application:
       - setupJob:
           jobName: management-frontend-acceptance
       - setupJob:
+          jobName: management-frontend-spec
+      - setupJob:
           jobName: management-frontend-unit
       - setupJob:
           jobName: consumer-frontend-acceptance
+      - setupJob:
+          jobName: consumer-frontend-spec
       - setupJob:
           jobName: consumer-frontend-unit
       - setupJob:
