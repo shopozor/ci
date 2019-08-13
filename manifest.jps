@@ -196,7 +196,7 @@ application:
       - installSaleorDependencies
     installTools:
       - cmd [cp]:
-        - apt install jq dos2unix sshpass
+        - apt install -y jq dos2unix sshpass
       - installYarn
       - installPickles
     installYarn:
