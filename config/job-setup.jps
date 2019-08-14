@@ -40,6 +40,8 @@ application:
       - setupJob:
           jobName: backend-spec
       - setupJob:
+          jobName: backend-security
+      - setupJob:
           jobName: management-frontend-acceptance
       - setupJob:
           jobName: management-frontend-spec
