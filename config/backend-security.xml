@@ -26,9 +26,9 @@
           <trim>true</trim>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>DOMAIN</name>
+          <name>HIDORA_DOMAIN</name>
           <description>Domain to test</description>
-          <defaultValue>http://shopozor-backend.hidora.com</defaultValue>
+          <defaultValue>shopozor-backend</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
