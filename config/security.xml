@@ -31,6 +31,16 @@
           <defaultValue>shopozor-backend</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>APPLICATION_TYPE</name>
+          <description>Type of the application to test. Corresponds to the folder name in the cloned repo.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>backend</string>
+              <string>frontend</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
