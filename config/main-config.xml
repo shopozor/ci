@@ -39,12 +39,12 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
-        <string>backend-acceptance-pr</string>
+        <string>backend-integration-pr</string>
         <string>backend-unit-pr</string>
         <string>common-frontend-unit-pr</string>
-        <string>consumer-frontend-acceptance-pr</string>
+        <string>consumer-frontend-integration-pr</string>
         <string>consumer-frontend-unit-pr</string>
-        <string>management-frontend-acceptance-pr</string>
+        <string>management-frontend-integration-pr</string>
         <string>management-frontend-unit-pr</string>
       </jobNames>
       <jobFilters/>
@@ -96,8 +96,8 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>consumer-e2e</string>
-        <string>consumer-frontend-acceptance</string>
-        <string>consumer-frontend-acceptance-pr</string>
+        <string>consumer-frontend-integration</string>
+        <string>consumer-frontend-integration-pr</string>
         <string>consumer-frontend-unit</string>
         <string>consumer-frontend-unit-pr</string>
       </jobNames>
@@ -122,8 +122,8 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>management-e2e</string>
-        <string>management-frontend-acceptance</string>
-        <string>management-frontend-acceptance-pr</string>
+        <string>management-frontend-integration</string>
+        <string>management-frontend-integration-pr</string>
         <string>management-frontend-unit</string>
         <string>management-frontend-unit-pr</string>
       </jobNames>
@@ -170,7 +170,7 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.."/>
-      <name>Acceptance tests</name>
+      <name>Integration tests</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
@@ -178,10 +178,10 @@
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>backend-acceptance</string>
         <string>backend-acceptance-pr</string>
-        <string>consumer-frontend-acceptance</string>
-        <string>consumer-frontend-acceptance-pr</string>
-        <string>management-frontend-acceptance</string>
-        <string>management-frontend-acceptance-pr</string>
+        <string>consumer-frontend-integration</string>
+        <string>consumer-frontend-integration-pr</string>
+        <string>management-frontend-integration</string>
+        <string>management-frontend-integration-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -229,9 +229,9 @@
         <string>backend-acceptance</string>
         <string>backend-unit</string>
         <string>common-frontend-unit</string>
-        <string>consumer-frontend-acceptance</string>
+        <string>consumer-frontend-integration</string>
         <string>consumer-frontend-unit</string>
-        <string>management-frontend-acceptance</string>
+        <string>management-frontend-integration</string>
         <string>management-frontend-unit</string>
       </jobNames>
       <jobFilters/>

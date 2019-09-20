@@ -92,7 +92,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>cypress/Jenkinsfile</scriptPath>
+    <scriptPath>cypress/integration/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

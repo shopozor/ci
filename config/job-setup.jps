@@ -50,9 +50,9 @@ application:
       - setupJob:
           jobName: consumer-e2e
       - setupJob:
-          jobName: consumer-frontend-acceptance
+          jobName: consumer-frontend-integration
       - setupJob:
-          jobName: consumer-frontend-acceptance-pr
+          jobName: consumer-frontend-integration-pr
       - setupJob:
           jobName: consumer-frontend-spec
       - setupJob:
@@ -62,9 +62,9 @@ application:
       - setupJob:
           jobName: management-e2e
       - setupJob:
-          jobName: management-frontend-acceptance
+          jobName: management-frontend-integration
       - setupJob:
-          jobName: management-frontend-acceptance-pr
+          jobName: management-frontend-integration-pr
       - setupJob:
           jobName: management-frontend-spec
       - setupJob:

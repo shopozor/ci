@@ -31,7 +31,7 @@
         <hudson.plugins.git.UserRemoteConfig>
           <name>origin</name>
           <refspec></refspec>
-          <url>https://github.com/shopozor/consumer-frontend</url>
+          <url>https://github.com/shopozor/management-frontend</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -52,7 +52,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>cypress/Jenkinsfile</scriptPath>
+    <scriptPath>cypress/integration/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>
