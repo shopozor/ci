@@ -32,43 +32,47 @@ application:
   actions:
     setupJobs:
       - setupJob:
-          jobName: backend-deploy
-      - setupJob:
           jobName: backend-acceptance
       - setupJob:
-          jobName: backend-unit
+          jobName: backend-acceptance-pr
+      - setupJob:
+          jobName: backend-deploy
       - setupJob:
           jobName: backend-spec
       - setupJob:
-          jobName: security
+          jobName: backend-unit
       - setupJob:
-          jobName: management-frontend-acceptance
+          jobName: backend-unit-pr
       - setupJob:
-          jobName: management-frontend-spec
+          jobName: common-frontend-unit
       - setupJob:
-          jobName: management-frontend-unit
+          jobName: common-frontend-unit-pr    
+      - setupJob:
+          jobName: consumer-e2e
       - setupJob:
           jobName: consumer-frontend-acceptance
+      - setupJob:
+          jobName: consumer-frontend-acceptance-pr
       - setupJob:
           jobName: consumer-frontend-spec
       - setupJob:
           jobName: consumer-frontend-unit
       - setupJob:
-          jobName: backend-acceptance-pr
-      - setupJob:
-          jobName: backend-unit-pr
-      - setupJob:
-          jobName: management-frontend-acceptance-pr
-      - setupJob:
-          jobName: management-frontend-unit-pr
-      - setupJob:
-          jobName: consumer-frontend-acceptance-pr
-      - setupJob:
           jobName: consumer-frontend-unit-pr
       - setupJob:
           jobName: management-e2e
       - setupJob:
-          jobName: consumer-e2e
+          jobName: management-frontend-acceptance
+      - setupJob:
+          jobName: management-frontend-acceptance-pr
+      - setupJob:
+          jobName: management-frontend-spec
+      - setupJob:
+          jobName: management-frontend-unit
+      - setupJob:
+          jobName: management-frontend-unit-pr
+      - setupJob:
+          jobName: security
       - restart
     setupJob:
       - upload:
