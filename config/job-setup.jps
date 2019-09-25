@@ -4,7 +4,7 @@ application:
   id: shopozor-ci
   name: Shopozor Continuous Integration
   version: 0.0
-  baseUrl: https://raw.githubusercontent.com/softozor/shopozor-ci/master
+  baseUrl: https://raw.githubusercontent.com/shopozor/ci/master
 
   globals:
     JOB_CREATION_SCRIPT: CreateJob.sh
