@@ -169,6 +169,24 @@ The Jelastic installation requires following form to be filled:
 
 ![Jelastic configuration form](doc/img/jelastic-configuration-form.png)
 
-## Next steps
+## End to end testing
 
-- use Dockerfile directly in pipeline (https://jenkins.io/doc/book/pipeline/docker/#dockerfile)
+Assume `backend-feature-branch` of backend has breaking changes, i.e. it is expected that at least one of the frontends won't integrate nicely any more with it. Then, when you merge `backend-feature-branch` into `dev` with a PR, then the e2e tests will fail with the frontend's `dev` branch. 
+
+The frontend should therefore create a `frontend-feature-branch` to adapt to the backend's breaking changes. When we merge `frontend-feature-branch` into `dev` with a new PR, the e2e tests will fail to integrate with the backend's `dev` branch. The feature branch of one repository can only test against the `dev` branch of the other if we want to automate that merging process somehow. Indeed, if you make a PR in the backend from `backend-feature-branch` to `dev`, then the Jenkins job can only know that you are on the backend and you would like to perform e2e testing. It knows nothing about the state of the frontend repositories. That information cannot be transmitted to the Jenkins job for the backend e2e tests either. 
+Because of that, we get into some kind of bottleneck, because we can never merge a feature branch into `dev` if we activate e2e testing in that process. 
+
+Therefore, no e2e test should be performed upon feature completion in one or the other separate repository. e2e tests should be performed upon merges from `dev` to `master`. 
+
+In that situation, assume the backend has breaking changes in its `dev` branch. Upon merging into master with a PR, the e2e tests will fail with the `dev` branch of at least one of our frontends. The frontend should therefore create `feature-branch` to adapt to the new backend's breaking changes. Upon merging the frontend's `feature-branch` into `dev` with a PR, the e2e tests should pass when tested against the backend's `dev` branch. At that point, both the backend and the frontend are ready to be merged into `master`. That way, we ensure that whatever we have in our `master` branches, interactions between the various applications will work.
+
+Of course, that bases on the reasonable assumption that before merging into `master`, all interactions between the apps are working in their `master` branches. Then, if the interactions in their `dev` branches are working (as tested by the e2e tests), then they should also work after merging into `master`.
+
+Example merging process from `dev` to `master`:
+
+1) merge backend --> e2e tests are run: backend - consumer frontend, backend - management frontend 
+if not passing, then adapt consumer and mgmt frontends until their `dev` branches make the tests pass
+2) merge consumer frontend --> e2e tests are run: backend - consumer frontend  --> should pass 
+3) merge management frontend --> e2e tests are run: backend - management frontend --> should pass 
+
+In the GHPRB, it is possible to only enable the e2e tests when merging to `master`. 
