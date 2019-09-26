@@ -72,6 +72,8 @@ application:
       - setupJob:
           jobName: management-frontend-unit-pr
       - setupJob:
+          jobName: publish-docker-image
+      - setupJob:
           jobName: security
       - restart
     setupJob:
