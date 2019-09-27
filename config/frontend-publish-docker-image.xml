@@ -57,7 +57,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>PublishToDocker.groovy</scriptPath>
+    <scriptPath>common/PublishToDocker.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

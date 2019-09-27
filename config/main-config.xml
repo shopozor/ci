@@ -321,7 +321,8 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
-        <string>publish-docker-image</string>
+        <string>backend-publish-docker-image</string>
+        <string>frontend-publish-docker-image</string>
       </jobNames>
       <jobFilters/>
       <columns>
