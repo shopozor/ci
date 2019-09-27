@@ -22,7 +22,7 @@
           <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
           <whiteListTargetBranches>
             <org.jenkinsci.plugins.ghprb.GhprbBranch>
-              <branch></branch>
+              <branch>master</branch>
             </org.jenkinsci.plugins.ghprb.GhprbBranch>
           </whiteListTargetBranches>
           <blackListTargetBranches>
