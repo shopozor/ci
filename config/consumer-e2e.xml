@@ -14,7 +14,7 @@
           <orgslist>softozor</orgslist>
           <cron>H/5 * * * *</cron>
           <buildDescTemplate></buildDescTemplate>
-          <onlyTriggerPhrase>true</onlyTriggerPhrase>
+          <onlyTriggerPhrase>false</onlyTriggerPhrase>
           <useGitHubHooks>true</useGitHubHooks>
           <permitAll>false</permitAll>
           <whitelist></whitelist>
@@ -31,7 +31,7 @@
             </org.jenkinsci.plugins.ghprb.GhprbBranch>
           </blackListTargetBranches>
           <gitHubAuthId>GHPRB_TRIGGER_AUTH_ID</gitHubAuthId>
-          <triggerPhrase>test consumer e2e</triggerPhrase>
+          <triggerPhrase></triggerPhrase>
           <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
           <blackListCommitAuthor></blackListCommitAuthor>
           <blackListLabels></blackListLabels>
