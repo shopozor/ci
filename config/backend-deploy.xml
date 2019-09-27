@@ -28,6 +28,16 @@
           <defaultValue></defaultValue>
           <trim>false</trim>
         </hudson.model.TextParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>IMAGE_TYPE</name>
+          <description>Content to be put into the Docker image.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>e2e</string>
+              <string>production</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
