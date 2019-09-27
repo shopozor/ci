@@ -33,7 +33,6 @@
           <description>Content to be put into the Docker image.</description>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
-              <string>e2e</string>
               <string>production</string>
             </a>
           </choices>
