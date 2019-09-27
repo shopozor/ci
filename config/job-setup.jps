@@ -62,6 +62,8 @@ application:
       - setupJob:
           jobName: consumer-frontend-unit-pr
       - setupJob:
+          jobName: frontend-deploy
+      - setupJob:
           jobName: frontend-publish-docker-image
       - setupJob:
           jobName: management-e2e

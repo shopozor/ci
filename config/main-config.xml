@@ -255,6 +255,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>backend-deploy</string>
+        <string>frontend-deploy</string>
       </jobNames>
       <jobFilters/>
       <columns>
