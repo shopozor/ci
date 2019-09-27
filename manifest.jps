@@ -72,7 +72,7 @@ application:
         caption: Base Url
         type: string
         required: true
-        default: https://raw.githubusercontent.com/shopozor/backend/dev/e2e/
+        default: https://raw.githubusercontent.com/shopozor/backend/dev/
       - type: spacer
         caption: User accounts
       - name: username1
