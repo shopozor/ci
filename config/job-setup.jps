@@ -38,6 +38,10 @@ application:
       - setupJob:
           jobName: backend-deploy
       - setupJob:
+          jobName: backend-e2e
+      - setupJob:
+          jobName: backend-e2e-pr
+      - setupJob:
           jobName: backend-publish-docker-image
       - setupJob:
           jobName: backend-spec
@@ -51,6 +55,8 @@ application:
           jobName: common-frontend-unit-pr    
       - setupJob:
           jobName: consumer-e2e
+      - setupJob:
+          jobName: consumer-e2e-pr
       - setupJob:
           jobName: consumer-frontend-integration
       - setupJob:
@@ -67,6 +73,8 @@ application:
           jobName: frontend-publish-docker-image
       - setupJob:
           jobName: management-e2e
+      - setupJob:
+          jobName: management-e2e-pr
       - setupJob:
           jobName: management-frontend-integration
       - setupJob:

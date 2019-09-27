@@ -1,0 +1,87 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.32">
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.42.0">
+          <spec>H/5 * * * *</spec>
+          <configVersion>3</configVersion>
+          <adminlist>zadigus</adminlist>
+          <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
+          <orgslist>softozor</orgslist>
+          <cron>H/5 * * * *</cron>
+          <buildDescTemplate></buildDescTemplate>
+          <onlyTriggerPhrase>false</onlyTriggerPhrase>
+          <useGitHubHooks>true</useGitHubHooks>
+          <permitAll>false</permitAll>
+          <whitelist></whitelist>
+          <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+          <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
+          <whiteListTargetBranches>
+            <org.jenkinsci.plugins.ghprb.GhprbBranch>
+              <branch>master</branch>
+            </org.jenkinsci.plugins.ghprb.GhprbBranch>
+          </whiteListTargetBranches>
+          <blackListTargetBranches>
+            <org.jenkinsci.plugins.ghprb.GhprbBranch>
+              <branch></branch>
+            </org.jenkinsci.plugins.ghprb.GhprbBranch>
+          </blackListTargetBranches>
+          <gitHubAuthId>GHPRB_TRIGGER_AUTH_ID</gitHubAuthId>
+          <triggerPhrase></triggerPhrase>
+          <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
+          <blackListCommitAuthor></blackListCommitAuthor>
+          <blackListLabels></blackListLabels>
+          <whiteListLabels></whiteListLabels>
+          <includedRegions></includedRegions>
+          <excludedRegions></excludedRegions>
+          <extensions>
+            <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+              <commitStatusContext>Consumer e2e tests</commitStatusContext>
+              <triggeredStatus></triggeredStatus>
+              <startedStatus></startedStatus>
+              <statusUrl></statusUrl>
+              <addTestResults>false</addTestResults>
+            </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+          </extensions>
+        </org.jenkinsci.plugins.ghprb.GhprbTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.66">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <name>origin</name>
+          <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
+          <url>https://github.com/shopozor/consumer-frontend</url>
+          <credentialsId>GITHUB_CREDENTIAL_ID</credentialsId>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>${sha1}</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="list"/>
+      <extensions>
+        <hudson.plugins.git.extensions.impl.SubmoduleOption>
+          <disableSubmodules>false</disableSubmodules>
+          <recursiveSubmodules>true</recursiveSubmodules>
+          <trackingSubmodules>false</trackingSubmodules>
+          <reference></reference>
+          <parentCredentials>true</parentCredentials>
+        </hudson.plugins.git.extensions.impl.SubmoduleOption>
+      </extensions>
+    </scm>
+    <scriptPath>cypress/e2e/Jenkinsfile</scriptPath>
+    <lightweight>true</lightweight>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

@@ -5,6 +5,10 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.4">
+      <projectUrl>https://github.com/shopozor/backend/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -24,7 +28,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/shopozor/consumer-frontend</url>
+          <url>https://github.com/shopozor/backend</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -45,7 +49,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>cypress/e2e/Jenkinsfile</scriptPath>
+    <scriptPath>e2e/Jenkinsfile</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
