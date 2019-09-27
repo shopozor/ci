@@ -22,6 +22,12 @@
           <defaultValue>dev</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GRAPHQL_API</name>
+          <description>Only used in frontend applications. This is the url to the GraphQL API.</description>
+          <defaultValue>http://shopozor-backend.hidora.com/graphql/</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
