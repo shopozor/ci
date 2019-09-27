@@ -10,12 +10,16 @@
           <description>Whether or not you want to have the dev tools in the image. For example, on a django backend, there are dev requirements files that can be installed to enable the testing environment. On a nodejs project, this flag would ensure that the devDependencies are installed. </description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
           <name>REPO</name>
           <description>The repository name of the project inside of the Shopozor organization.</description>
-          <defaultValue>backend</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>consumer-frontend</string>
+              <string>management-frontend</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BRANCH</name>
           <description>Branch / tag name or commit number to be built in the docker image.</description>
@@ -28,6 +32,16 @@
           <defaultValue>http://shopozor-backend.hidora.com/graphql/</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>IMAGE_TYPE</name>
+          <description>Content to be put into the Docker image.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>e2e</string>
+              <string>production</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
