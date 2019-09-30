@@ -67,9 +67,14 @@ application:
         inputType: password
         required: true
       - type: spacer
-        caption: E2e Backend JPS
+        caption: E2E JPS
+      - name: commonFrontendBaseUrl
+        caption: FE Url
+        type: string
+        required: true
+        default: https://raw.githubusercontent.com/shopozor/common-frontend/dev/
       - name: backendJpsBaseUrl
-        caption: Base Url
+        caption: BE Url
         type: string
         required: true
         default: https://raw.githubusercontent.com/shopozor/backend/dev/
@@ -91,6 +96,7 @@ application:
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
+    COMMON_FRONTEND_CREDENTIAL_FILENAME: common-frontend-baseurl-credentials.xml
     CONSUMER_BACKEND_CREDENTIAL_FILENAME: consumer-backend-name-credentials.xml
     MGMT_BACKEND_CREDENTIAL_FILENAME: management-backend-name-credentials.xml
     CONSUMER_FRONTEND_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
@@ -103,6 +109,7 @@ application:
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
+    COMMON_FRONTEND_CREDENTIALS_ID: common-frontend-baseurl-credentials
     CONSUMER_BACKEND_CREDENTIALS_ID: consumer-backend-name-credentials
     MGMT_BACKEND_CREDENTIALS_ID: management-backend-name-credentials
     CONSUMER_FRONTEND_CREDENTIALS_ID: consumer-frontend-name-credentials
@@ -286,6 +293,7 @@ application:
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
       - fillPasswordCredentials:
           filename: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
@@ -358,6 +366,13 @@ application:
           description: Name of the consumer frontend environment
           nodeGroup: cp
       - fillSecretCredentials:
+          filename: /tmp/${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.COMMON_FRONTEND_CREDENTIALS_ID}
+          secret: ${globals.commonFrontendBaseUrl}
+          description: Name of the consumer frontend environment
+          nodeGroup: cp
+      - fillSecretCredentials:
           filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
@@ -376,6 +391,7 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
       - restart
     createUserAccounts:
