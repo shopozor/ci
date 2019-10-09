@@ -50,7 +50,7 @@
       </extensions>
     </scm>
     <scriptPath>e2e/Jenkinsfile</scriptPath>
-    <lightweight>true</lightweight>
+    <lightweight>false</lightweight>
   </definition>
   <triggers/>
   <disabled>false</disabled>
