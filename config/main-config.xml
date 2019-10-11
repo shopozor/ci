@@ -106,6 +106,7 @@
         <string>consumer-frontend-integration-pr</string>
         <string>consumer-frontend-unit</string>
         <string>consumer-frontend-unit-pr</string>
+        <string>frontend-spec</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -127,6 +128,7 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+        <string>frontend-spec</string>
         <string>management-e2e</string>
         <string>management-e2e-pr</string>
         <string>management-frontend-integration</string>
@@ -338,6 +340,29 @@
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>backend-publish-docker-image</string>
         <string>frontend-publish-docker-image</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Spec</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>backend-spec</string>
+        <string>frontend-spec</string>
       </jobNames>
       <jobFilters/>
       <columns>

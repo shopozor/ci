@@ -62,7 +62,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>cypress/Spec.groovy</scriptPath>
+    <scriptPath>common/cypress/Spec.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>
