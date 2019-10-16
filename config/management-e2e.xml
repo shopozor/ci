@@ -51,6 +51,7 @@
           <reference></reference>
           <parentCredentials>true</parentCredentials>
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
+        <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
       </extensions>
     </scm>
     <scriptPath>cypress/e2e/Jenkinsfile</scriptPath>
