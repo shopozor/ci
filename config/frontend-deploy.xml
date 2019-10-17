@@ -14,16 +14,6 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>REPO</name>
-          <description>The repository name of the project inside of the Shopozor organization.</description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>consumer-frontend</string>
-              <string>management-frontend</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>TAG</name>
           <description>Tag you want to build and deploy a docker container from</description>
@@ -65,7 +55,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/shopozor/${REPO}</url>
+          <url>https://github.com/shopozor/frontend</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -86,7 +76,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>./common/production/Jenkinsfile</scriptPath>
+    <scriptPath>production/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

@@ -18,16 +18,6 @@
           <description>Whether or not you want to have the dev tools in the image. For example, on a django backend, there are dev requirements files that can be installed to enable the testing environment. On a nodejs project, this flag would ensure that the devDependencies are installed. </description>
           <defaultValue>true</defaultValue>
         </hudson.model.BooleanParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>REPO</name>
-          <description>The repository name of the project inside of the Shopozor organization.</description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>consumer-frontend</string>
-              <string>management-frontend</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BRANCH</name>
           <description>Branch / tag name or commit number to be built in the docker image.</description>
@@ -58,7 +48,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/shopozor/${REPO}</url>
+          <url>https://github.com/shopozor/frontend</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -79,7 +69,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>common/PublishToDocker.groovy</scriptPath>
+    <scriptPath>PublishToDocker.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

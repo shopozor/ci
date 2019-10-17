@@ -68,11 +68,11 @@ application:
         required: true
       - type: spacer
         caption: E2E JPS
-      - name: commonFrontendBaseUrl
+      - name: frontendBaseUrl
         caption: FE Url
         type: string
         required: true
-        default: https://raw.githubusercontent.com/shopozor/common-frontend/dev/
+        default: https://raw.githubusercontent.com/shopozor/frontend/dev/
       - name: backendJpsBaseUrl
         caption: BE Url
         type: string
@@ -96,11 +96,8 @@ application:
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
-    COMMON_FRONTEND_CREDENTIAL_FILENAME: common-frontend-baseurl-credentials.xml
-    CONSUMER_BACKEND_CREDENTIAL_FILENAME: consumer-backend-name-credentials.xml
-    MGMT_BACKEND_CREDENTIAL_FILENAME: management-backend-name-credentials.xml
-    CONSUMER_FRONTEND_CREDENTIAL_FILENAME: consumer-frontend-name-credentials.xml
-    MGMT_FRONTEND_CREDENTIAL_FILENAME: management-frontend-name-credentials.xml
+    FRONTEND_CREDENTIAL_FILENAME: frontend-baseurl-credentials.xml
+    BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     USER_ACCOUNT_CREATION_SCRIPT: CreateUserAccount.sh
     GITHUB_CREDENTIALS_ID: github-credentials
@@ -109,11 +106,8 @@ application:
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
-    COMMON_FRONTEND_CREDENTIALS_ID: common-frontend-baseurl-credentials
-    CONSUMER_BACKEND_CREDENTIALS_ID: consumer-backend-name-credentials
-    MGMT_BACKEND_CREDENTIALS_ID: management-backend-name-credentials
-    CONSUMER_FRONTEND_CREDENTIALS_ID: consumer-frontend-name-credentials
-    MGMT_FRONTEND_CREDENTIALS_ID: management-frontend-name-credentials
+    FRONTEND_CREDENTIALS_ID: frontend-baseurl-credentials
+    BACKEND_CREDENTIALS_ID: backend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
     PG_DB_NAME: saleor
@@ -122,10 +116,8 @@ application:
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
     USER_PASSWORD1: ${fn.password(10)}
-    consumerBackendEnvName: shopozor-consumer-backend-e2e
-    consumerFrontendEnvName: shopozor-consumer-frontend-e2e
-    mgmtBackendEnvName: shopozor-mgmt-backend-e2e
-    mgmtFrontendEnvName: shopozor-mgmt-frontend-e2e
+    backendEnvName: shopozor-backend-e2e
+    frontendEnvName: shopozor-frontend-e2e
 
   env:
     topology:
@@ -288,13 +280,10 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
       - fillPasswordCredentials:
           filename: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
@@ -336,20 +325,12 @@ application:
           description: Jelastic app credentials (hoster url and app id)
           nodeGroup: cp
       - fillPasswordCredentials:
-          filename: /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
+          filename: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
-          credentialID: ${globals.CONSUMER_BACKEND_CREDENTIALS_ID}
-          username: ${globals.consumerBackendEnvName}
+          credentialID: ${globals.BACKEND_CREDENTIALS_ID}
+          username: ${globals.backendEnvName}
           password: ${settings.backendJpsBaseUrl}
-          description: Name and base raw jps url of the consumer backend environment (it is intended to be completed with /manifest.jps)
-          nodeGroup: cp
-      - fillPasswordCredentials:
-          filename: /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.MGMT_BACKEND_CREDENTIALS_ID}
-          username: ${globals.mgmtBackendEnvName}
-          password: ${settings.backendJpsBaseUrl}
-          description: Name and base raw jps url of the management backend environment (it is intended to be completed with /manifest.jps)
+          description: Name and base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
@@ -359,25 +340,11 @@ application:
           description: Postgres URL
           nodeGroup: cp
       - fillSecretCredentials:
-          filename: /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
+          filename: /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
-          credentialID: ${globals.CONSUMER_FRONTEND_CREDENTIALS_ID}
-          secret: ${globals.consumerFrontendEnvName}
-          description: Name of the consumer frontend environment
-          nodeGroup: cp
-      - fillSecretCredentials:
-          filename: /tmp/${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.COMMON_FRONTEND_CREDENTIALS_ID}
-          secret: ${globals.commonFrontendBaseUrl}
-          description: Name of the consumer frontend environment
-          nodeGroup: cp
-      - fillSecretCredentials:
-          filename: /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.MGMT_FRONTEND_CREDENTIALS_ID}
-          secret: ${globals.mgmtFrontendEnvName}
-          description: Name of the management frontend environment
+          credentialID: ${globals.FRONTEND_CREDENTIALS_ID}
+          secret: ${globals.frontendBaseUrl}
+          description: Name of the frontend environment
           nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
@@ -388,11 +355,8 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_BACKEND_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_BACKEND_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.CONSUMER_FRONTEND_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.COMMON_FRONTEND_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.MGMT_FRONTEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
       - restart
     createUserAccounts:
       - createUserAccount:

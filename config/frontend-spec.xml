@@ -23,16 +23,6 @@
     <org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>REPO</name>
-          <description>The repository name of the project inside of the Shopozor organization.</description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>consumer-frontend</string>
-              <string>management-frontend</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BRANCH</name>
           <description>Branch to check out for building</description>
@@ -49,7 +39,7 @@
         <hudson.plugins.git.UserRemoteConfig>
           <name>origin</name>
           <refspec></refspec>
-          <url>https://github.com/shopozor/${REPO}</url>
+          <url>https://github.com/shopozor/frontend</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -70,7 +60,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>common/cypress/Spec.groovy</scriptPath>
+    <scriptPath>cypress/e2e/Spec.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

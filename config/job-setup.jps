@@ -50,39 +50,23 @@ application:
       - setupJob:
           jobName: backend-unit-pr
       - setupJob:
-          jobName: common-frontend-unit
+          jobName: frontend-e2e
       - setupJob:
-          jobName: common-frontend-unit-pr    
+          jobName: frontend-e2e-pr
       - setupJob:
-          jobName: consumer-e2e
+          jobName: frontend-integration
       - setupJob:
-          jobName: consumer-e2e-pr
+          jobName: frontend-integration-pr
       - setupJob:
-          jobName: consumer-frontend-integration
+          jobName: frontend-unit
       - setupJob:
-          jobName: consumer-frontend-integration-pr
-      - setupJob:
-          jobName: consumer-frontend-unit
-      - setupJob:
-          jobName: consumer-frontend-unit-pr
+          jobName: frontend-unit-pr
       - setupJob:
           jobName: frontend-deploy
       - setupJob:
           jobName: frontend-publish-docker-image
       - setupJob:
           jobName: frontend-spec
-      - setupJob:
-          jobName: management-e2e
-      - setupJob:
-          jobName: management-e2e-pr
-      - setupJob:
-          jobName: management-frontend-integration
-      - setupJob:
-          jobName: management-frontend-integration-pr
-      - setupJob:
-          jobName: management-frontend-unit
-      - setupJob:
-          jobName: management-frontend-unit-pr
       - setupJob:
           jobName: security
       - restart

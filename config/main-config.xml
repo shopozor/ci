@@ -42,13 +42,9 @@
         <string>backend-e2e-pr</string>
         <string>backend-integration-pr</string>
         <string>backend-unit-pr</string>
-        <string>common-frontend-unit-pr</string>
-        <string>consumer-e2e-pr</string>
-        <string>consumer-frontend-integration-pr</string>
-        <string>consumer-frontend-unit-pr</string>
-        <string>management-e2e-pr</string>
-        <string>management-frontend-integration-pr</string>
-        <string>management-frontend-unit-pr</string>
+        <string>frontend-e2e-pr</string>
+        <string>frontend-integration-pr</string>
+        <string>frontend-unit-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -94,47 +90,19 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.."/>
-      <name>Consumer</name>
+      <name>Frontend</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>consumer-e2e</string>
-        <string>consumer-e2e-pr</string>
-        <string>consumer-frontend-integration</string>
-        <string>consumer-frontend-integration-pr</string>
-        <string>consumer-frontend-unit</string>
-        <string>consumer-frontend-unit-pr</string>
+        <string>frontend-e2e</string>
+        <string>frontend-e2e-pr</string>
+        <string>frontend-integration</string>
+        <string>frontend-integration-pr</string>
+        <string>frontend-unit</string>
+        <string>frontend-unit-pr</string>
         <string>frontend-spec</string>
-      </jobNames>
-      <jobFilters/>
-      <columns>
-        <hudson.views.StatusColumn/>
-        <hudson.views.WeatherColumn/>
-        <hudson.views.JobColumn/>
-        <hudson.views.LastSuccessColumn/>
-        <hudson.views.LastFailureColumn/>
-        <hudson.views.LastDurationColumn/>
-        <hudson.views.BuildButtonColumn/>
-      </columns>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.."/>
-      <name>Management</name>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList"/>
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>frontend-spec</string>
-        <string>management-e2e</string>
-        <string>management-e2e-pr</string>
-        <string>management-frontend-integration</string>
-        <string>management-frontend-integration-pr</string>
-        <string>management-frontend-unit</string>
-        <string>management-frontend-unit-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -158,12 +126,8 @@
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>backend-unit</string>
         <string>backend-unit-pr</string>
-        <string>common-frontend-unit</string>
-        <string>common-frontend-unit-pr</string>
-        <string>consumer-frontend-unit</string>
-        <string>consumer-frontend-unit-pr</string>
-        <string>management-frontend-unit</string>
-        <string>management-frontend-unit-pr</string>
+        <string>frontend-unit</string>
+        <string>frontend-unit-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -187,10 +151,8 @@
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>backend-acceptance</string>
         <string>backend-acceptance-pr</string>
-        <string>consumer-frontend-integration</string>
-        <string>consumer-frontend-integration-pr</string>
-        <string>management-frontend-integration</string>
-        <string>management-frontend-integration-pr</string>
+        <string>frontend-integration</string>
+        <string>frontend-integration-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -214,10 +176,8 @@
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>backend-e2e</string>
         <string>backend-e2e-pr</string>
-        <string>consumer-e2e</string>
-        <string>consumer-e2e-pr</string>
-        <string>management-e2e</string>
-        <string>management-e2e-pr</string>
+        <string>frontend-e2e</string>
+        <string>frontend-e2e-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -242,13 +202,9 @@
         <string>backend-acceptance</string>
         <string>backend-e2e</string>
         <string>backend-unit</string>
-        <string>common-frontend-unit</string>
-        <string>consumer-e2e</string>
-        <string>consumer-frontend-integration</string>
-        <string>consumer-frontend-unit</string>
-        <string>management-e2e</string>
-        <string>management-frontend-integration</string>
-        <string>management-frontend-unit</string>
+        <string>frontend-e2e</string>
+        <string>frontend-integration</string>
+        <string>frontend-unit</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -294,29 +250,6 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>security</string>
-      </jobNames>
-      <jobFilters/>
-      <columns>
-        <hudson.views.StatusColumn/>
-        <hudson.views.WeatherColumn/>
-        <hudson.views.JobColumn/>
-        <hudson.views.LastSuccessColumn/>
-        <hudson.views.LastFailureColumn/>
-        <hudson.views.LastDurationColumn/>
-        <hudson.views.BuildButtonColumn/>
-      </columns>
-      <recurse>false</recurse>
-    </listView>
-    <listView>
-      <owner class="hudson" reference="../../.."/>
-      <name>Common</name>
-      <filterExecutors>false</filterExecutors>
-      <filterQueue>false</filterQueue>
-      <properties class="hudson.model.View$PropertyList"/>
-      <jobNames>
-        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>common-frontend-unit</string>
-        <string>common-frontend-unit-pr</string>
       </jobNames>
       <jobFilters/>
       <columns>
