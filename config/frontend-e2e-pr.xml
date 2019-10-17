@@ -88,7 +88,7 @@
         <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
       </extensions>
     </scm>
-    <scriptPath>cypress/e2e/Jenkinsfile</scriptPath>
+    <scriptPath>e2e/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>
