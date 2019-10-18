@@ -50,6 +50,8 @@ application:
       - setupJob:
           jobName: backend-unit-pr
       - setupJob:
+          jobName: cleanup-e2e-envs
+      - setupJob:
           jobName: frontend-e2e
       - setupJob:
           jobName: frontend-e2e-pr
