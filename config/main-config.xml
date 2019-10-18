@@ -40,7 +40,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>backend-e2e-pr</string>
-        <string>backend-integration-pr</string>
+        <string>backend-acceptance-pr</string>
         <string>backend-unit-pr</string>
         <string>frontend-e2e-pr</string>
         <string>frontend-integration-pr</string>
@@ -103,6 +103,7 @@
         <string>frontend-unit</string>
         <string>frontend-unit-pr</string>
         <string>frontend-spec</string>
+        <string>security</string>
       </jobNames>
       <jobFilters/>
       <columns>
@@ -205,6 +206,7 @@
         <string>frontend-e2e</string>
         <string>frontend-integration</string>
         <string>frontend-unit</string>
+        <string>security</string>
       </jobNames>
       <jobFilters/>
       <columns>
