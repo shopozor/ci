@@ -6,11 +6,10 @@ Our Shopozor product needs a reliable CI/CD system. This repository consists of 
 * acceptance test
 * end-to-end test
 
-the Shopozor product which is split into three applications: 
+the Shopozor product which is split into two applications: 
 
-1. the [backend](https://github.com/softozor/shopozor-backend)
-2. the [consumer frontend](https://github.com/softozor/shopozor-consumer-frontend)
-3. the [management frontend](https://github.com/softozor/shopozor-management-frontend)
+1. the [backend](https://github.com/shopozor/backend)
+2. the [frontend](https://github.com/shopozor/frontend)
 
 This CI configuration provides following output: 
 
