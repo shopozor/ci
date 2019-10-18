@@ -127,7 +127,7 @@ In the PR comments,
 
 ### Jobs setup
 
-The jobs are setup automatically by means of the Jenkins CLI. Their configuration can be found in `config/shopozor-*.xml`:
+The jobs are setup automatically by means of the Jenkins CLI. Their configuration can be found in `config/*.xml`:
 
 ![Jenkins jobs](doc/img/jenkins-jobs.png)
 
@@ -137,9 +137,8 @@ Jenkins pipelines can nicely be configured by code. Extensive documentation can 
 
 #### Global shared libraries
 
-Because our e2e pipelines share the very same code, they can do so over the [frontend applications' common code](https://github.com/softozor/shopozor-common-frontend):
+Because our e2e pipelines share some code, they can do so over:
 
-* the [common callable pipeline](https://github.com/shopozor/jenkins-shared-library/blob/master/vars/frontendE2ePipeline.groovy)
 * the [common pipeline helpers](https://github.com/shopozor/jenkins-shared-library/blob/master/src/ch/softozor/pipeline/Helpers.groovy)
 
 The configuration of the global shared libraries happens [here](config/plugins/org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml).
@@ -185,9 +184,8 @@ Of course, that bases on the reasonable assumption that before merging into `mas
 
 Example merging process from `dev` to `master`:
 
-1) merge backend --> e2e tests are run: backend - consumer frontend, backend - management frontend 
-if not passing, then adapt consumer and mgmt frontends until their `dev` branches make the tests pass
-2) merge consumer frontend --> e2e tests are run: backend - consumer frontend  --> should pass 
-3) merge management frontend --> e2e tests are run: backend - management frontend --> should pass 
+1) merge backend --> e2e tests are run: backend - frontend
+if not passing, then adapt frontend until its `dev` branch makes the tests pass
+2) merge frontend --> e2e tests are run: backend - frontend  --> should pass 
 
 In the GHPRB, it is possible to only enable the e2e tests when merging to `master`. 
