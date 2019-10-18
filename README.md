@@ -17,6 +17,8 @@ This CI configuration provides following output:
 * our Github Pull Requests get feedback on the Shopozor applications' tests
 * our Github repositories get feedback on the Shopozor applications' current build statuses
 
+The resulting CI/CD Jelastic environment is the entrypoint to any deployment and test.
+
 ## Motivations
 
 We took the decision to implement our CI/CD with Jenkins, even though there are much more sexy alternatives in the development ecosystem out there. **The main reason behind that decision is our very little development budget**. After the first release, our customer will take over the CI/CD costs.
