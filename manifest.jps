@@ -96,7 +96,7 @@ application:
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
     POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
-    FRONTEND_CREDENTIAL_FILENAME: frontend-baseurl-credentials.xml
+    FRONTEND_CREDENTIAL_FILENAME: frontend-name-credentials.xml
     BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
     USER_ACCOUNT_CREATION_SCRIPT: CreateUserAccount.sh
@@ -106,7 +106,7 @@ application:
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
-    FRONTEND_CREDENTIALS_ID: frontend-baseurl-credentials
+    FRONTEND_CREDENTIALS_ID: frontend-name-credentials
     BACKEND_CREDENTIALS_ID: backend-name-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
@@ -281,9 +281,9 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
       - fillPasswordCredentials:
           filename: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
@@ -332,19 +332,20 @@ application:
           password: ${settings.backendJpsBaseUrl}
           description: Name and base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
+      - fillPasswordCredentials:
+          filename: /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.FRONTEND_CREDENTIALS_ID}
+          susername: ${globals.frontendEnvName}
+          password: ${settings.frontendJpsBaseUrl}
+          description: Name and base raw jps url of the frontend environment (it is intended to be completed with /manifest.jps)
+          nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.POSTGRES_CREDENTIALS_ID}
           secret: ${globals.PG_DATABASE_URL}
           description: Postgres URL
-          nodeGroup: cp
-      - fillSecretCredentials:
-          filename: /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.FRONTEND_CREDENTIALS_ID}
-          secret: ${globals.frontendBaseUrl}
-          description: Name of the frontend environment
           nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
