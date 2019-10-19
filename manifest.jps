@@ -11,6 +11,12 @@ application:
   settings:
     fields:
       - type: spacer
+        caption: Product
+      - name: productName
+        caption: Product name
+        type: string
+        required: true
+      - type: spacer
         caption: softozor.ch credentials
       - name: softozorUsername
         caption: Username
@@ -106,8 +112,8 @@ application:
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
     POSTGRES_CREDENTIALS_ID: postgres-credentials
-    FRONTEND_CREDENTIALS_ID: frontend-name-credentials
-    BACKEND_CREDENTIALS_ID: backend-name-credentials
+    FRONTEND_CREDENTIALS_ID: frontend-baseurl-credentials
+    BACKEND_CREDENTIALS_ID: backend-baseurl-credentials
     PG_USER_PASSWORD: ${fn.password(10)}
     PG_DB_USERNAME: saleor
     PG_DB_NAME: saleor
@@ -116,8 +122,8 @@ application:
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
     USER_PASSWORD1: ${fn.password(10)}
-    backendEnvName: shopozor-backend-e2e
-    frontendEnvName: shopozor-frontend-e2e
+    PRODUCT_CREDENTIAL_FILENAME: product-credentials.xml
+    PRODUCT_CREDENTIALS_ID: product-name-credentials
 
   env:
     topology:
@@ -280,10 +286,11 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.DOCKER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
-          - cp ${globals.CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
+          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.PRODUCT_CREDENTIAL_FILENAME}
       - fillPasswordCredentials:
           filename: /tmp/${globals.GITHUB_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
@@ -324,21 +331,19 @@ application:
           password: ${settings.jelasticAppId}
           description: Jelastic app credentials (hoster url and app id)
           nodeGroup: cp
-      - fillPasswordCredentials:
+      - fillSecretCredentials:
           filename: /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.BACKEND_CREDENTIALS_ID}
-          username: ${globals.backendEnvName}
-          password: ${settings.backendJpsBaseUrl}
-          description: Name and base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
+          secret: ${settings.backendJpsBaseUrl}
+          description: Base raw jps url of the backend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
-      - fillPasswordCredentials:
+      - fillSecretCredentials:
           filename: /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.FRONTEND_CREDENTIALS_ID}
-          susername: ${globals.frontendEnvName}
-          password: ${settings.frontendJpsBaseUrl}
-          description: Name and base raw jps url of the frontend environment (it is intended to be completed with /manifest.jps)
+          secret: ${settings.frontendJpsBaseUrl}
+          description: Base raw jps url of the frontend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
       - fillSecretCredentials:
           filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
@@ -346,6 +351,13 @@ application:
           credentialID: ${globals.POSTGRES_CREDENTIALS_ID}
           secret: ${globals.PG_DATABASE_URL}
           description: Postgres URL
+          nodeGroup: cp
+      - fillSecretCredentials:
+          filename: /tmp/${globals.PRODUCT_CREDENTIAL_FILENAME}
+          globalOrSystem: GLOBAL
+          credentialID: ${globals.PRODUCT_CREDENTIALS_ID}
+          secret: ${settings.productName}
+          description: Product name
           nodeGroup: cp
       - cmd [cp]:
           - wget --quiet ${baseUrl}/scripts/${globals.CREDENTIAL_SCRIPT} -O /tmp/${globals.CREDENTIAL_SCRIPT}
@@ -358,6 +370,7 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
+          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.PRODUCT_CREDENTIAL_FILENAME}
       - restart
     createUserAccounts:
       - createUserAccount:
