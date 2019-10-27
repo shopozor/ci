@@ -101,7 +101,6 @@ application:
     DOCKER_CREDENTIAL_FILENAME: docker-credentials.xml
     JELASTIC_USER_CREDENTIAL_FILENAME: jelastic-credentials.xml
     JELASTIC_APP_CREDENTIAL_FILENAME: jelastic-app-credentials.xml
-    POSTGRES_CREDENTIAL_FILENAME: postgres-credentials.xml
     FRONTEND_CREDENTIAL_FILENAME: frontend-name-credentials.xml
     BACKEND_CREDENTIAL_FILENAME: backend-name-credentials.xml
     CREDENTIAL_SCRIPT: CreateCredential.sh
@@ -111,14 +110,8 @@ application:
     DOCKER_CREDENTIALS_ID: docker-credentials
     JELASTIC_USER_CREDENTIALS_ID: jelastic-credentials
     JELASTIC_APP_CREDENTIALS_ID: jelastic-app-credentials
-    POSTGRES_CREDENTIALS_ID: postgres-credentials
     FRONTEND_CREDENTIALS_ID: frontend-baseurl-credentials
     BACKEND_CREDENTIALS_ID: backend-baseurl-credentials
-    PG_USER_PASSWORD: ${fn.password(10)}
-    PG_DB_USERNAME: saleor
-    PG_DB_NAME: saleor
-    PG_PASSWORD: ${fn.password(10)}
-    PG_DATABASE_URL: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
     GHPRBTRIGGER_PLUGIN_CONFIG: org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
     GLOBAL_LIBRARIES_PLUGIN_CONFIG: org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml
     USER_PASSWORD1: ${fn.password(10)}
@@ -139,7 +132,6 @@ application:
     - installAptPackages
     - createUserAccounts
     - setupCredentials
-    - installPostgresqlDB
     - setupJobs
     - setupJobViews
     - sendEmailWithPasswords
@@ -182,7 +174,6 @@ application:
       - restart
     installAptPackages:
       - installTools
-      - installSaleorDependencies
     installTools:
       - cmd [cp]:
         - apt install -y jq dos2unix sshpass
@@ -200,9 +191,6 @@ application:
         - apt install -y mono-runtime mono-complete
         - wget https://github.com/picklesdoc/pickles/releases/download/v2.20.1/Pickles-exe-2.20.1.zip
         - unzip Pickles-exe-2.20.1.zip -d /opt/pickles
-    installSaleorDependencies:
-      cmd [cp]:
-        - apt install -y build-essential python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
     fillPasswordCredentials:
       - api:
           - method: environment.file.ReplaceInBody
@@ -271,7 +259,6 @@ application:
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - cp ${globals.CREDENTIAL_FILENAME} ${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
           - wget --quiet ${baseUrl}/config/${globals.SECRET_CREDENTIAL_FILENAME}
-          - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.POSTGRES_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.BACKEND_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.FRONTEND_CREDENTIAL_FILENAME}
           - cp ${globals.SECRET_CREDENTIAL_FILENAME} ${globals.PRODUCT_CREDENTIAL_FILENAME}
@@ -330,13 +317,6 @@ application:
           description: Base raw jps url of the frontend environment (it is intended to be completed with /manifest.jps)
           nodeGroup: cp
       - fillSecretCredentials:
-          filename: /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
-          globalOrSystem: GLOBAL
-          credentialID: ${globals.POSTGRES_CREDENTIALS_ID}
-          secret: ${globals.PG_DATABASE_URL}
-          description: Postgres URL
-          nodeGroup: cp
-      - fillSecretCredentials:
           filename: /tmp/${globals.PRODUCT_CREDENTIAL_FILENAME}
           globalOrSystem: GLOBAL
           credentialID: ${globals.PRODUCT_CREDENTIALS_ID}
@@ -351,7 +331,6 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.DOCKER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_USER_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.JELASTIC_APP_CREDENTIAL_FILENAME}
-          - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.POSTGRES_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.PRODUCT_CREDENTIAL_FILENAME}
@@ -366,13 +345,6 @@ application:
         - wget --quiet ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT} "${this.username}" "${this.password}" "admin" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
-    installPostgresqlDB:
-      - cmd[sqldb]:
-          - jem passwd set -p ${globals.PG_PASSWORD}
-          - export PGPASSWORD='${globals.PG_PASSWORD}'
-          - psql -U webadmin -d postgres -c "CREATE ROLE ${globals.PG_DB_USERNAME} PASSWORD '${globals.PG_USER_PASSWORD}' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;"
-          - psql -U webadmin -d postgres -c "CREATE DATABASE ${globals.PG_DB_NAME} OWNER ${globals.PG_DB_USERNAME} ENCODING 'utf-8' TEMPLATE template0;"
-        user: root
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
@@ -394,10 +366,6 @@ application:
       return:
         result: success
         email: |
-          # PostgreSQL
-          **PostgreSQL URL**: postgres://${globals.PG_DB_USERNAME}:${globals.PG_USER_PASSWORD}@${nodes.sqldb.intIP}:5432/${globals.PG_DB_NAME}
-          # PgAdmin
-          **webadmin**: ${globals.PG_PASSWORD}
           # User accounts
           * **${settings.username1}**: ${globals.USER_PASSWORD1}
     restart:  
