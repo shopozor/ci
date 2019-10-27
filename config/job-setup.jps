@@ -32,10 +32,6 @@ application:
   actions:
     setupJobs:
       - setupJob:
-          jobName: backend-acceptance
-      - setupJob:
-          jobName: backend-acceptance-pr
-      - setupJob:
           jobName: backend-deploy
       - setupJob:
           jobName: backend-e2e
@@ -46,9 +42,9 @@ application:
       - setupJob:
           jobName: backend-spec
       - setupJob:
-          jobName: backend-unit
+          jobName: backend-tests
       - setupJob:
-          jobName: backend-unit-pr
+          jobName: backend-tests-pr
       - setupJob:
           jobName: cleanup-e2e-envs
       - setupJob:

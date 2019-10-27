@@ -60,7 +60,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>features/Jenkinsfile</scriptPath>
+    <scriptPath>Test.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

@@ -40,8 +40,7 @@
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
         <string>backend-e2e-pr</string>
-        <string>backend-acceptance-pr</string>
-        <string>backend-unit-pr</string>
+        <string>backend-tests-pr</string>
         <string>frontend-e2e-pr</string>
         <string>frontend-integration-pr</string>
         <string>frontend-unit-pr</string>
@@ -66,14 +65,12 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>backend-acceptance</string>
-        <string>backend-acceptance-pr</string>
         <string>backend-deploy</string>
         <string>backend-e2e</string>
         <string>backend-e2e-pr</string>
-        <string>backend-unit</string>
-        <string>backend-unit-pr</string>
         <string>backend-spec</string>
+        <string>backend-tests</string>
+        <string>backend-tests-pr</string>
         <string>security</string>
       </jobNames>
       <jobFilters/>
@@ -125,8 +122,8 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>backend-unit</string>
-        <string>backend-unit-pr</string>
+        <string>backend-tests</string>
+        <string>backend-tests-pr</string>
         <string>frontend-unit</string>
         <string>frontend-unit-pr</string>
       </jobNames>
@@ -150,8 +147,8 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>backend-acceptance</string>
-        <string>backend-acceptance-pr</string>
+        <string>backend-tests</string>
+        <string>backend-tests-pr</string>
         <string>frontend-integration</string>
         <string>frontend-integration-pr</string>
       </jobNames>
@@ -200,9 +197,8 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>backend-acceptance</string>
+        <string>backend-tests</string>
         <string>backend-e2e</string>
-        <string>backend-unit</string>
         <string>frontend-e2e</string>
         <string>frontend-integration</string>
         <string>frontend-unit</string>

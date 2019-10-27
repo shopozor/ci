@@ -57,7 +57,7 @@
           <excludedRegions></excludedRegions>
           <extensions>
             <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-              <commitStatusContext>Unit tests</commitStatusContext>
+              <commitStatusContext>Tests</commitStatusContext>
               <triggeredStatus></triggeredStatus>
               <startedStatus></startedStatus>
               <statusUrl></statusUrl>
@@ -100,7 +100,7 @@
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
       </extensions>
     </scm>
-    <scriptPath>unit_tests/Jenkinsfile</scriptPath>
+    <scriptPath>Tests.groovy</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>
