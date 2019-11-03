@@ -198,7 +198,7 @@ application:
       - installTools
     installTools:
       - cmd [cp]:
-        - apt install -y jq dos2unix sshpass
+        - apt install -y jq dos2unix sshpass netcat
       - installYarn
       - installPickles
     installYarn:
