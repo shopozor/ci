@@ -131,7 +131,6 @@ application:
     - installDocker
     - installPlugins
     - installAptPackages
-    - setupPytest
     - createUserAccounts
     - setupCredentials
     - setupJobs
@@ -214,9 +213,6 @@ application:
         - apt install -y mono-runtime mono-complete
         - wget https://github.com/picklesdoc/pickles/releases/download/v2.20.1/Pickles-exe-2.20.1.zip
         - unzip Pickles-exe-2.20.1.zip -d /opt/pickles
-    setupPytest:
-      - cmd [cp]:
-        - echo "PYTHONDONTWRITEBYTECODE=1" >> /etc/environment
     fillPasswordCredentials:
       - api:
           - method: environment.file.ReplaceInBody
