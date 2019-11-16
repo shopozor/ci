@@ -10,6 +10,18 @@ application:
 
   settings:
     fields:
+      - type: space 
+        caption: Environments 
+      - name: nginxVersion
+        caption: Nginx version 
+        type: string 
+        required: true 
+        default: 1.16.1
+      - name: jenkinsPort
+        caption: Jenkins port
+        type: string
+        required: true 
+        default: 8080
       - type: spacer
         caption: Product
       - name: productName
@@ -121,6 +133,15 @@ application:
   env:
     topology:
         nodes:
+          - nodeGroup: bl
+            nodeType: nginx-dockerized
+            tag: ${settings.nginxVersion}
+            displayName: Node balancing
+            count: 1
+            fixedCloudlets: 1
+            cloudlets: 4
+            env:
+              DOCKER_EXPOSED_PORT: 22,80,443
           - image: jenkins/jenkins:lts
             count: 1
             cloudlets: 32
@@ -133,6 +154,7 @@ application:
     - installAptPackages
     - createUserAccounts
     - setupCredentials
+    - secure 
     - setupJobs
     - setupJobViews
     - sendEmailWithPasswords
@@ -367,6 +389,56 @@ application:
         - wget --quiet ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT} "${this.username}" "${this.password}" "admin" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
+    replaceJenkinsPlaceholders:
+      - replaceInFile:
+          path: ${this.filename}
+          replacements:
+            - pattern: JENKINS_IP_ADDRESS
+              replacement: ${nodes.cp.intIP}
+            - pattern: JENKINS_PORT
+              replacement: ${settings.jenkinsPort}
+        nodeType: bl
+    secure:
+      - cleanupExistingConfig
+      - setupSecureConfig
+      - enableIPv4
+      - restartAll
+    cleanupExistingConfig:
+      - cmd [bl]:
+        - rm -f /etc/nginx/conf.d/ssl.conf
+      - cmd [cp]:
+        - rm -f /var/jenkins_home/war/WEB-INF/web.xml
+    setupSecureConfig:
+      - upload:
+          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf
+            destPath: /etc/nginx/conf.d/ssl.conf
+          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf
+            destPath: /etc/nginx/conf.d/nginx-shopozor.conf
+        nodeGroup: bl
+      - upload:
+          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml
+            destPath: /var/jenkins_home/war/WEB-INF/web.xml
+        nodeGroup: cp
+      - replaceJenkinsPlaceholders:
+          filename: /etc/nginx/conf.d/nginx-shopozor.conf
+      - replaceJenkinsPlaceholders:
+          filename: /etc/nginx/conf.d/ssl.conf
+      - replaceInFile:
+          path: /etc/nginx/nginx.conf
+          replacements:
+            - pattern: nginx-jelastic.conf
+              replacement: conf.d/nginx-shopozor.conf
+        nodeType: bl
+    enableIPv4:
+      - api:
+        - method: jelastic.environment.binder.AttachExtIp
+          params:
+            nodeId: ${nodes.bl.id}
+      # TODO: bind ssl
+    restartAll:
+      - restartContainers:
+        - nodeGroup: cp 
+        - nodeGroup: bl
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
