@@ -378,7 +378,6 @@ application:
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.BACKEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.FRONTEND_CREDENTIAL_FILENAME}
           - /tmp/${globals.CREDENTIAL_SCRIPT} /tmp/${globals.PRODUCT_CREDENTIAL_FILENAME}
-      - restart
     createUserAccounts:
       - createUserAccount:
           username: ${settings.username1}
@@ -399,46 +398,24 @@ application:
               replacement: ${settings.jenkinsPort}
         nodeType: bl
     secure:
-      - cleanupExistingConfig
       - setupSecureConfig
       - enableIPv4
-      - restartAll
-    cleanupExistingConfig:
-      - cmd [bl]:
-        - rm -f /etc/nginx/conf.d/ssl.conf
-      - cmd [cp]:
-        - rm -f /var/jenkins_home/war/WEB-INF/web.xml
     setupSecureConfig:
-      - upload:
-          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf
-            destPath: /etc/nginx/conf.d/ssl.conf
-          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf
-            destPath: /etc/nginx/conf.d/nginx-shopozor.conf
-        nodeGroup: bl
-      - upload:
-          - sourcePath: https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml
-            destPath: /var/jenkins_home/war/WEB-INF/web.xml
-        nodeGroup: cp
+      - cmd [bl]:
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf -O /etc/nginx/nginx-jelastic.conf
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf -O /etc/nginx/conf.d/ssl.conf
+      - cmd [cp]:
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml -O /var/jenkins_home/war/WEB-INF/web.xml
       - replaceJenkinsPlaceholders:
-          filename: /etc/nginx/conf.d/nginx-shopozor.conf
+          filename: /etc/nginx/nginx-jelastic.conf
       - replaceJenkinsPlaceholders:
           filename: /etc/nginx/conf.d/ssl.conf
-      - replaceInFile:
-          path: /etc/nginx/nginx.conf
-          replacements:
-            - pattern: nginx-jelastic.conf
-              replacement: conf.d/nginx-shopozor.conf
-        nodeType: bl
     enableIPv4:
       - api:
         - method: jelastic.environment.binder.AttachExtIp
           params:
             nodeId: ${nodes.bl.id}
       # TODO: bind ssl
-    restartAll:
-      - restartContainers:
-        - nodeGroup: cp 
-        - nodeGroup: bl
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
@@ -465,5 +442,6 @@ application:
     restart:  
       - restartContainers:
         - nodeGroup: cp
+        - nodeGroup: bl
 success: |
   **Your environment Jenkins has been installed successfully.**
