@@ -171,16 +171,6 @@ application:
               nodeGroup: cp
               vars:
                 JELASTIC_EXPOSE: DISABLED
-      # If port 8080 isn't redirected to port 80, then accessing the environment name
-      # will not route to the Jenkins server. An endpoint needs to be opened in order
-      # to expose Jenkins port 8080 to the outside world
-      - api:
-          - method: jelastic.environment.control.AddEndpoint
-            params:
-              nodeId: ${nodes.cp.id}
-              privatePort: 8080
-              protocol: TCP 
-              name: jenkins/jenkins
     installDocker:
       - cmd [cp]:
         - curl -fsSL ${baseUrl}/scripts/InstallDocker.sh | /bin/bash
