@@ -207,7 +207,7 @@ application:
       - installTools
     installTools:
       - cmd [cp]:
-        - apt install -y jq dos2unix sshpass netcat
+        - apt install -y jq dos2unix sshpass
       # TODO: we don't want this anymore!
       - installYarn
       - installPickles
@@ -418,9 +418,19 @@ application:
         nodeType: bl
     installTrustedCertificate: 
       - installCertbot
+      # - getAndInstallCertificate
     installCertbot:
       - cmd [bl]:
-        - apt install -y certbot python-certbot-apache
+        - wget https://dl.eff.org/certbot-auto
+        - mv certbot-auto /usr/local/bin/certbot-auto
+        - chown root /usr/local/bin/certbot-auto
+        - chmod 0755 /usr/local/bin/certbot-auto
+        user: root
+    getAndInstallCertificate:
+      - cmd [bl]:
+        # This needs further arguments apparently + ssl.conf adaption?
+        - /usr/local/bin/certbot-auto --nginx
+        user: root
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
