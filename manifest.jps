@@ -161,9 +161,9 @@ application:
     - installAptPackages
     - createUserAccounts
     - setupCredentials
-    - secure 
     - setupJobs
     - setupJobViews
+    - secure 
     - restart
     - sendEmailWithPasswords
 
