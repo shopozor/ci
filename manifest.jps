@@ -129,6 +129,7 @@ application:
     USER_PASSWORD1: ${fn.password(10)}
     PRODUCT_CREDENTIAL_FILENAME: product-credentials.xml
     PRODUCT_CREDENTIALS_ID: product-name-credentials
+    DHPARAM_FILENAME: /var/lib/nginx/dhparam.pem
 
   env:
     topology:
@@ -139,16 +140,22 @@ application:
             displayName: Node balancing
             count: 1
             fixedCloudlets: 1
-            cloudlets: 4
+            cloudlets: 32
             env:
               DOCKER_EXPOSED_PORT: 22,80,443
           - image: jenkins/jenkins:lts
             count: 1
+            fixedCloudlets: 1
             cloudlets: 32
             nodeGroup: cp
+            env:
+              # By default, Jelastic redirects Jenkins port 8080 to port 80;
+              # this has the side-effect that docker can't get access to the internet,
+              # therefore requiring the option --network=host in the docker build command.
+              # To avoid that, we disable that redirection by setting the following variable
+              JELASTIC_EXPOSE: DISABLED
 
   onInstall:
-    - setupJenkinsForDocker
     - installDocker
     - installPlugins
     - installAptPackages
@@ -161,17 +168,6 @@ application:
     - sendEmailWithPasswords
 
   actions:
-    setupJenkinsForDocker:
-      # By default, Jelastic redirects Jenkins port 8080 to port 80;
-      # this has the side-effect that docker can't get access to the internet,
-      # therefore requiring the option --network=host in the docker build command.
-      # To avoid that, we disable that redirection by setting the following variable
-      - api:
-          - method: jelastic.environment.control.AddContainerEnvVars
-            params:
-              nodeGroup: cp
-              vars:
-                JELASTIC_EXPOSE: DISABLED
     installDocker:
       - cmd [cp]:
         - curl -fsSL ${baseUrl}/scripts/InstallDocker.sh | /bin/bash
@@ -212,9 +208,11 @@ application:
     installTools:
       - cmd [cp]:
         - apt install -y jq dos2unix sshpass netcat
+      # TODO: we don't want this anymore!
       - installYarn
       - installPickles
     installYarn:
+      # TODO: we don't want this anymore! we don't need yarn or nodejs, we use docker images instead
       cmd [cp]:
         - curl -sL https://deb.nodesource.com/setup_10.x | bash -
         - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -379,6 +377,28 @@ application:
         - wget --quiet ${baseUrl}/scripts/${globals.USER_ACCOUNT_CREATION_SCRIPT} -O /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - chmod u+x /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT}
         - /tmp/${globals.USER_ACCOUNT_CREATION_SCRIPT} "${this.username}" "${this.password}" "admin" "$(cat /var/jenkins_home/secrets/initialAdminPassword)"
+    secure:
+      - redirectHttpToHttps
+      - secureJenkinsConfiguration
+      - configureSSL
+    redirectHttpToHttps:
+      - cmd [bl]:
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf -O /etc/nginx/nginx-jelastic.conf
+        user: root 
+    secureJenkinsConfiguration:
+      - cmd [cp]:
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml -O /var/jenkins_home/war/WEB-INF/web.xml
+    configureSSL:
+      - installAddon:
+          id: letsencrypt
+      - cmd [bl]:
+        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf -O /etc/nginx/conf.d/ssl.conf
+      - replaceJenkinsPlaceholders:
+          filename: /etc/nginx/conf.d/ssl.conf
+      - cmd [bl]:
+        - openssl dhparam -out ${globals.DHPARAM_FILENAME} 4096
+      - replaceDhparamPlaceholders:
+          filename: /etc/nginx/conf.d/ssl.conf
     replaceJenkinsPlaceholders:
       - replaceInFile:
           path: ${this.filename}
@@ -388,19 +408,13 @@ application:
             - pattern: JENKINS_PORT
               replacement: ${settings.jenkinsPort}
         nodeType: bl
-    secure:
-      - installAddon:
-          id: letsencrypt
-      - cmd [bl]:
-        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf -O /etc/nginx/nginx-jelastic.conf
-        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf -O /etc/nginx/conf.d/ssl.conf
-        user: root
-      - cmd [cp]:
-        - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml -O /var/jenkins_home/war/WEB-INF/web.xml
-      - replaceJenkinsPlaceholders:
-          filename: /etc/nginx/nginx-jelastic.conf
-      - replaceJenkinsPlaceholders:
-          filename: /etc/nginx/conf.d/ssl.conf
+    replaceDhparamPlaceholders:
+      - replaceInFile:
+          path: ${this.filename}
+          replacements:
+            - pattern: PATH_TO_PEM_FILE
+              replacement: ${globals.DHPARAM_FILENAME}
+        nodeType: bl
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
