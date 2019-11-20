@@ -157,6 +157,7 @@ application:
     - secure 
     - setupJobs
     - setupJobViews
+    - restart
     - sendEmailWithPasswords
 
   actions:
@@ -388,24 +389,18 @@ application:
               replacement: ${settings.jenkinsPort}
         nodeType: bl
     secure:
-      - setupSecureConfig
-      - enableIPv4
-    setupSecureConfig:
+      - installAddon:
+          id: letsencrypt
       - cmd [bl]:
         - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf -O /etc/nginx/nginx-jelastic.conf
         - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/conf.d/ssl.conf -O /etc/nginx/conf.d/ssl.conf
+        user: root
       - cmd [cp]:
         - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/jenkins/web.xml -O /var/jenkins_home/war/WEB-INF/web.xml
       - replaceJenkinsPlaceholders:
           filename: /etc/nginx/nginx-jelastic.conf
       - replaceJenkinsPlaceholders:
           filename: /etc/nginx/conf.d/ssl.conf
-    enableIPv4:
-      - api:
-        - method: jelastic.environment.binder.AttachExtIp
-          params:
-            nodeId: ${nodes.bl.id}
-      # TODO: bind ssl
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
@@ -433,5 +428,17 @@ application:
       - restartContainers:
         - nodeGroup: cp
         - nodeGroup: bl
+
+  addons:
+    - id: letsencrypt
+      name: letsencrypt
+      onInstall:
+        - install:
+            envName: ${env.envName}
+            jps: https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps
+            settings:
+              nodeGroup: bl
+              customDomains: "" # TODO: get that as argument
+
 success: |
   **Your environment Jenkins has been installed successfully.**
