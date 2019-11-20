@@ -381,6 +381,7 @@ application:
       - redirectHttpToHttps
       - secureJenkinsConfiguration
       - configureSSL
+      - installTrustedCertificate
     redirectHttpToHttps:
       - cmd [bl]:
         - wget https://raw.githubusercontent.com/shopozor/jelastic-configuration/master/nginx/${settings.nginxVersion}/nginx-jelastic.conf -O /etc/nginx/nginx-jelastic.conf
@@ -415,6 +416,11 @@ application:
             - pattern: PATH_TO_PEM_FILE
               replacement: ${globals.DHPARAM_FILENAME}
         nodeType: bl
+    installTrustedCertificate: 
+      - installCertbot
+    installCertbot:
+      - cmd [bl]:
+        - apt install -y certbot python-certbot-apache
     setupJobs:
       # It was necessary to put the job setup in a separate jps.
       # Putting the code written in the job-setup.jps here directly 
@@ -452,7 +458,7 @@ application:
             jps: https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps
             settings:
               nodeGroup: bl
-              customDomains: "" # TODO: get that as argument
+              customDomains: ${env.envName}.hidora.com
 
 success: |
   **Your environment Jenkins has been installed successfully.**
