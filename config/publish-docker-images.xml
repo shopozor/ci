@@ -13,24 +13,24 @@
     </jenkins.model.BuildDiscarderProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.BooleanParameterDefinition>
-          <name>ENABLE_DEV_TOOLS</name>
-          <description>Whether or not you want to have the dev tools in the image. For example, on a django backend, there are dev requirements files that can be installed to enable the testing environment. On a nodejs project, this flag would ensure that the devDependencies are installed. </description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>BRANCH</name>
-          <description>Branch / tag name or commit number to be built in the docker image.</description>
+          <name>TAG</name>
+          <description>Tag name to be built in the docker image.</description>
           <defaultValue>dev</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GRAPHQL_API_URL</name>
+          <description>This is the url to the production GraphQL API.</description>
+          <defaultValue>http://shopozor-backend.hidora.com/v1/graphql/</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
-          <name>IMAGE_TYPE</name>
-          <description>Content to be put into the Docker image.</description>
+          <name>BUILD_TYPE</name>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
-              <string>e2e</string>
               <string>production</string>
+              <string>e2e</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
