@@ -24,12 +24,6 @@
           <defaultValue>dev</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GRAPHQL_API</name>
-          <description>Only used in frontend applications. This is the url to the GraphQL API.</description>
-          <defaultValue>http://shopozor-backend.hidora.com/graphql/</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>IMAGE_TYPE</name>
           <description>Content to be put into the Docker image.</description>
@@ -48,7 +42,7 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/shopozor/frontend</url>
+          <url>https://github.com/shopozor/services</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>

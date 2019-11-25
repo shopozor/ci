@@ -6,10 +6,7 @@ Our Shopozor product needs a reliable CI/CD system. This repository consists of 
 * acceptance test
 * end-to-end test
 
-the Shopozor product which is split into two applications: 
-
-1. the [backend](https://github.com/shopozor/backend)
-2. the [frontend](https://github.com/shopozor/frontend)
+the Shopozor services.
 
 This CI configuration provides following output: 
 
@@ -42,11 +39,11 @@ We took the decision to implement our CI/CD with Jenkins, even though there are 
 
 ### Isolated component integration
 
-Each of our applications (`shopozor-backend`, `shopozor-consumer-frontend`, and `shopozor-management-frontend`) is unit- and acceptance-tested in isolation of the other components. This is done inside of the Jenkins docker container which is provided with the relevant tools (e.g. `yarn`).
+Each of our services is unit- and integration-tested in isolation of the other services. This is done inside of the Jenkins docker container which is provided with the relevant docker tools.
 
 ### Interacting components integration
 
-The two major use cases of our product, the Consumer and the Management use cases, are tested end-to-end. That means that all the necessary applications are started on their own Jelastic environments and the tests are run on them. The test results are then gathered from those environments and referenced on our Jenkins job.
+The two major use cases of our product, the Consumer and the Management use cases, are tested end-to-end. That means that all the necessary services are started on their own Jelastic environments and the tests are run on them. The test results are then gathered from those environments and referenced on our Jenkins job.
 
 ## Jenkins setup on Jelastic
 
@@ -61,7 +58,6 @@ It runs a [docker image of jenkins](https://hub.docker.com/r/jenkins/jenkins) as
 Out of the box, the jenkins docker image isn't provided with all the tools we need for our CI/CD. Additionally, we need the following software:
 
 * **docker**, because we build docker images 
-* **yarn**, because we build our frontend applications
 * **jq**, because we interact with Jelastic environments
 
 in our pipelines.
@@ -168,24 +164,3 @@ The list of recent deliveries clearly shows whether the webhook gets triggered a
 The Jelastic installation requires following form to be filled:
 
 ![Jelastic configuration form](doc/img/jelastic-configuration-form.png)
-
-## End to end testing
-
-Assume `backend-feature-branch` of backend has breaking changes, i.e. it is expected that at least one of the frontends won't integrate nicely any more with it. Then, when you merge `backend-feature-branch` into `dev` with a PR, then the e2e tests will fail with the frontend's `dev` branch. 
-
-The frontend should therefore create a `frontend-feature-branch` to adapt to the backend's breaking changes. When we merge `frontend-feature-branch` into `dev` with a new PR, the e2e tests will fail to integrate with the backend's `dev` branch. The feature branch of one repository can only test against the `dev` branch of the other if we want to automate that merging process somehow. Indeed, if you make a PR in the backend from `backend-feature-branch` to `dev`, then the Jenkins job can only know that you are on the backend and you would like to perform e2e testing. It knows nothing about the state of the frontend repositories. That information cannot be transmitted to the Jenkins job for the backend e2e tests either. 
-Because of that, we get into some kind of bottleneck, because we can never merge a feature branch into `dev` if we activate e2e testing in that process. 
-
-Therefore, no e2e test should be performed upon feature completion in one or the other separate repository. e2e tests should be performed upon merges from `dev` to `master`. 
-
-In that situation, assume the backend has breaking changes in its `dev` branch. Upon merging into `master` with a PR, the e2e tests will fail with the `dev` branch of at least one of our frontends. The frontend should therefore create `feature-branch` to adapt to the new backend's breaking changes. Upon merging the frontend's `feature-branch` into `dev` with a PR, the e2e tests should pass when tested against the backend's `dev` branch. At that point, both the backend and the frontend are ready to be merged into `master`. That way, we ensure that whatever we have in our `master` branches, interactions between the various applications will work.
-
-Of course, that bases on the reasonable assumption that before merging into `master`, all interactions between the apps are working in their `master` branches. Then, if the interactions in their `dev` branches are working (as tested by the e2e tests), then they should also work after merging into `master`.
-
-Example merging process from `dev` to `master`:
-
-1) merge backend --> e2e tests are run: backend - frontend
-if not passing, then adapt frontend until its `dev` branch makes the tests pass
-2) merge frontend --> e2e tests are run: backend - frontend  --> should pass 
-
-In the GHPRB, it is possible to only enable the e2e tests when merging to `master`. 

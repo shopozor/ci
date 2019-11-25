@@ -1,5 +1,6 @@
 <?xml version='1.1' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.32">
+<flow-definition plugin="workflow-job@2.33">
+  <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -15,53 +16,29 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>TAG</name>
-          <description>Tag you want to build and deploy a docker container from</description>
-          <defaultValue>v0.0.1</defaultValue>
+          <name>BRANCH</name>
+          <description>Branch to be e2e tested.</description>
+          <defaultValue>dev</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>STAGING_BRANCH</name>
-          <description>Staging branch</description>
-          <defaultValue>staging</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GRAPHQL_API</name>
-          <description>Url of the server's graphql api.</description>
-          <defaultValue>http://shopozor-backend.hidora.com/graphql/</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>DESCRIPTION</name>
-          <description>Tag description</description>
-          <defaultValue></defaultValue>
-          <trim>false</trim>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>IMAGE_TYPE</name>
-          <description>Content to be put into the Docker image.</description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>production</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.70">
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.73">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.11.0">
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>https://github.com/shopozor/frontend</url>
+          <url>https://github.com/shopozor/services</url>
           <credentialsId>github-credentials</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>${STAGING_BRANCH}</name>
+          <name>${BRANCH}</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -74,9 +51,10 @@
           <reference></reference>
           <parentCredentials>true</parentCredentials>
         </hudson.plugins.git.extensions.impl.SubmoduleOption>
+        <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
       </extensions>
     </scm>
-    <scriptPath>production/Jenkinsfile</scriptPath>
+    <scriptPath>cypress/e2e/Jenkinsfile</scriptPath>
     <lightweight>false</lightweight>
   </definition>
   <triggers/>

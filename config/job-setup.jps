@@ -32,39 +32,21 @@ application:
   actions:
     setupJobs:
       - setupJob:
-          jobName: backend-deploy
-      - setupJob:
-          jobName: backend-e2e
-      - setupJob:
-          jobName: backend-e2e-pr
-      - setupJob:
-          jobName: backend-publish-docker-image
-      - setupJob:
-          jobName: backend-spec
-      - setupJob:
-          jobName: backend-tests
-      - setupJob:
-          jobName: backend-tests-pr
-      - setupJob:
           jobName: cleanup-e2e-envs
       - setupJob:
-          jobName: frontend-e2e
+          jobName: deploy
       - setupJob:
-          jobName: frontend-e2e-pr
+          jobName: e2e
       - setupJob:
-          jobName: frontend-integration
+          jobName: e2e-pr
       - setupJob:
-          jobName: frontend-integration-pr
+          jobName: publish-docker-images
       - setupJob:
-          jobName: frontend-unit
+          jobName: specification
       - setupJob:
-          jobName: frontend-unit-pr
+          jobName: tests
       - setupJob:
-          jobName: frontend-deploy
-      - setupJob:
-          jobName: frontend-publish-docker-image
-      - setupJob:
-          jobName: frontend-spec
+          jobName: tests-pr
       - setupJob:
           jobName: security
       - restart
