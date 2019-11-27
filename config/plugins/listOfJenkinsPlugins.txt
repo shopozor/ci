@@ -18,4 +18,5 @@ ssh-slaves
 subversion
 timestamper
 workflow-aggregator
+workflow-cps
 ws-cleanup
