@@ -16,7 +16,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>docker system prune -a</command>
+      <command>docker system prune -af</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
