@@ -36,6 +36,8 @@ application:
       - setupJob:
           jobName: deploy
       - setupJob:
+          jobName: docker-prune
+      - setupJob:
           jobName: e2e
       - setupJob:
           jobName: e2e-pr
