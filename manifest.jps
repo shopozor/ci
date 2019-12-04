@@ -203,6 +203,7 @@ application:
         - apt install -y jq dos2unix sshpass
       - installYarn
       - installPickles
+      - installHasuraClient
     installYarn:
       cmd [cp]:
         - curl -sL https://deb.nodesource.com/setup_10.x | bash -
@@ -211,10 +212,14 @@ application:
         - apt update 
         - apt install -y yarn nodejs
     installPickles:
-      - cmd [cp]:
+      cmd [cp]:
         - apt install -y mono-runtime mono-complete
         - wget https://github.com/picklesdoc/pickles/releases/download/v2.20.1/Pickles-exe-2.20.1.zip
         - unzip Pickles-exe-2.20.1.zip -d /opt/pickles
+    installHasuraClient:
+      cmd [cp]:
+        - wget https://github.com/hasura/graphql-engine/releases/download/v1.0.0-beta.9/cli-hasura-linux-amd64 -O /usr/local/bin/hasura
+        - chmod a+x /usr/local/bin/hasura
     fillPasswordCredentials:
       - api:
           - method: environment.file.ReplaceInBody
