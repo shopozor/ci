@@ -19,12 +19,6 @@
           <defaultValue>dev</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>GRAPHQL_API_URL</name>
-          <description>This is the url to the production GraphQL API.</description>
-          <defaultValue>http://shopozor-backend.hidora.com/v1/graphql/</defaultValue>
-          <trim>false</trim>
-        </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>BUILD_TYPE</name>
           <choices class="java.util.Arrays$ArrayList">
@@ -48,7 +42,7 @@
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>${BRANCH}</name>
+          <name>${TAG}</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
