@@ -204,6 +204,7 @@ application:
       - installYarn
       - installPickles
       - installHasuraClient
+      - installPrecommit
     installYarn:
       cmd [cp]:
         - curl -sL https://deb.nodesource.com/setup_10.x | bash -
@@ -221,6 +222,10 @@ application:
         - wget https://github.com/hasura/graphql-engine/releases/download/v1.0.0-beta.9/cli-hasura-linux-amd64 -O /usr/local/bin/hasura
         - chmod a+x /usr/local/bin/hasura
         - hasura update-cli
+    installPrecommit:
+      cmd [cp]:
+        - apt install -y python3-pip 
+        - pip3 install pre-commit
     fillPasswordCredentials:
       - api:
           - method: environment.file.ReplaceInBody
