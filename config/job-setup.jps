@@ -36,13 +36,13 @@ application:
       - setupJob:
           jobName: deploy
       - setupJob:
-          jobName: docker-prune
-      - setupJob:
           jobName: e2e
       - setupJob:
           jobName: e2e-pr
       - setupJob:
           jobName: publish-docker-images
+      - setupJob:
+          jobName: security
       - setupJob:
           jobName: specification
       - setupJob:
@@ -50,7 +50,9 @@ application:
       - setupJob:
           jobName: tests-pr
       - setupJob:
-          jobName: security
+          jobName: update-software
+      - setupJob:
+          jobName: weekly-maintenance
       - restart
     setupJob:
       - upload:

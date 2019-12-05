@@ -90,8 +90,6 @@
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
-        <string>cleanup-e2e-envs</string>
-        <string>docker-prune</string>
         <string>e2e</string>
         <string>security</string>
         <string>tests</string>
@@ -110,14 +108,15 @@
     </listView>
     <listView>
       <owner class="hudson" reference="../../.."/>
-      <name>Clean-up</name>
+      <name>Maintenance</name>
       <filterExecutors>false</filterExecutors>
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
         <string>cleanup-e2e-envs</string>
-        <string>docker-prune</string>
+        <string>update-software</string>
+        <string>weekly-maintenance</string>
       </jobNames>
       <jobFilters/>
       <columns>
